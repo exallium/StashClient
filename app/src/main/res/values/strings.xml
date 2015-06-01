@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">StashClient</string>
+    <string name="fragment_login_username_hint">Username</string>
+    <string name="fragment_login_password_hint">Password</string>
+    <string name="fragment_login_server_toggle">Connect to My Server</string>
+    <string name="fragment_login_server_hint">stash.example.com</string>
+    <string name="fragment_login_save_details">Save these Details</string>
+    <string name="fragment_login_submit">Log In</string>
+</resources>
