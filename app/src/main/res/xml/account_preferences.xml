@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="General Settings" />
+    <PreferenceScreen
+        android:key="account_settings"
+        android:title="@string/preferences_account_title"
+        android:summary="@string/preferences_account_summary">
+        <intent
+            android:action="com.exallium.stashclient.app.ACCOUNTS"
+            android:targetPackage="com.exallium.stashclient"
+            android:targetClass="com.exallium.stashclient.controller.RouterActivity" />
+    </PreferenceScreen>
+</PreferenceScreen>
