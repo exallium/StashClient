@@ -18,7 +18,12 @@ public data class ApplicationProperties()
 public data class LogInfo(val logLevel: LogLevel)
 public data class MarkupPreview(val html: String)
 public data class Repository
-public data class Project
+public data class Project(var key: String,
+                          var id: Int,
+                          var name: String,
+                          var description: String,
+                          var public: Boolean,
+                          var type: String)
 public data class Permitted(val permitted: Boolean)
 public data class Branch
 public data class Change

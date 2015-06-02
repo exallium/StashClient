@@ -5,15 +5,20 @@ import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
+import com.exallium.stashclient.app.AbstractLoggingSubscriber
 import com.exallium.stashclient.app.R
 import rx.subjects.PublishSubject
 
 import kotlinx.android.synthetic.activity_router.*
+import rx.Subscriber
+import rx.android.lifecycle.LifecycleObservable
 
 public class RouterActivity : Activity() {
 
     companion object {
+        private val TAG = RouterActivity.javaClass.getSimpleName()
         public val routeRequestHandler: PublishSubject<RouteRequest> = PublishSubject.create()
     }
 
@@ -21,17 +26,26 @@ public class RouterActivity : Activity() {
 
     public enum class Route {
         LOGIN,
-        RECENT_EVENTS
+        PROJECTS
     }
 
     var account: Account? = null
     var currentRequest: RouteRequest? = null
+    var currentSubscriber: RouteRequestSubscriber? = null
+
+    private inner class RouteRequestSubscriber : AbstractLoggingSubscriber<RouteRequest>(TAG) {
+        override fun onNext(t: RouteRequest?) {
+            if (t != null)
+                requestFragment(t)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_router)
 
         toolbar.setTitle(R.string.app_name)
+        toolbar.setTitleTextColor(Color.WHITE)
 
         if ("com.exallium.stashclient.LOGIN".equals(getIntent().getAction())) {
             requestFragment(RouteRequest(Route.LOGIN))
@@ -52,7 +66,7 @@ public class RouterActivity : Activity() {
                 account = defaultAccountList.get(0)
                 val bundle = Bundle()
                 bundle.putParcelable("com.exallium.stashclient.ACCOUNT", account)
-                requestFragment(RouteRequest(Route.RECENT_EVENTS, bundle))
+                requestFragment(RouteRequest(Route.PROJECTS, bundle))
             }
         }
     }
@@ -60,14 +74,24 @@ public class RouterActivity : Activity() {
     private fun requestFragment(routeRequest: RouteRequest) {
         if (currentRequest != routeRequest) {
             var transaction = getFragmentManager().beginTransaction()
-            when (routeRequest.route) {
-                Route.LOGIN -> transaction.add(R.id.fragment_container, LoginFragment())
-                Route.RECENT_EVENTS -> transaction.add(R.id.fragment_container, LoginFragment())
-            }
+            transaction.add(R.id.fragment_container, createFragment(routeRequest))
             if (currentRequest != null)
                 transaction.addToBackStack(null)
             transaction.commit()
             currentRequest = routeRequest
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        currentSubscriber = RouteRequestSubscriber()
+        routeRequestHandler.subscribe(currentSubscriber)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        currentSubscriber?.unsubscribe()
+        currentSubscriber = null
+    }
+
 }

@@ -4,6 +4,8 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.util.Base64
+import com.exallium.stashclient.app.getApiUrl
+import com.exallium.stashclient.app.getUsername
 import retrofit.RequestInterceptor
 import retrofit.RestAdapter
 import retrofit.http.*
@@ -25,17 +27,17 @@ public class StashApiManager(val context: Context, val account: Account) {
 
     init {
         // Break account name into user and api
-        val apiUrl = getApiUrl(account)
+        val apiUrl = account.getApiUrl()
         restAdapter = RestAdapter.Builder().setEndpoint(apiUrl)
-                .setRequestInterceptor(AuthenticationInterceptor(context, account)).build()
+                .setRequestInterceptor(AuthenticationInterceptor()).build()
     }
 
-    private class AuthenticationInterceptor(val context: Context, val account: Account) : RequestInterceptor {
+    private inner class AuthenticationInterceptor() : RequestInterceptor {
 
         val authManager = AccountManager.get(context)
 
         override fun intercept(request: RequestInterceptor.RequestFacade?) {
-            val b64Creds = Base64.encode("%s:%s".format(getUsername(account),
+            val b64Creds = Base64.encodeToString("%s:%s".format(account.getUsername(),
                     authManager.getPassword(account)).toByteArray(), Base64.DEFAULT)
             request?.addHeader("Authorization", "Basic " + b64Creds)
         }
@@ -52,14 +54,8 @@ public class StashApiManager(val context: Context, val account: Account) {
         }
     }
 
-    companion object {
-        private fun getApiUrl(account: Account): String {
-            return account.name.substring(account.name.indexOf('@') + 1)
-        }
+    object AccountUtils {
 
-        private fun getUsername(account: Account): String {
-            return account.name.substring(0, account.name.indexOf('@'))
-        }
     }
 
     object Factory {
