@@ -1,6 +1,7 @@
 package com.exallium.stashclient.app.controller.adapters
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,7 +11,7 @@ import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.model.stash.Project
 import rx.Observable
 
-public class ProjectsAdapter(observable: Observable<EventElement<String, Project>>)  : RxRecyclerViewAdapter<String, Project, ProjectsAdapter.ViewHolder>(observable) {
+public class ProjectsAdapter(observable: Observable<EventElement<String, Project>>) : RxRecyclerViewAdapter<String, Project, ProjectsAdapter.ViewHolder>(observable) {
 
     override fun onBindViewHolder(holder: ViewHolder?, event: EventElement<String, Project>?) {
         if (holder != null && event != null)
@@ -18,7 +19,11 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        throw UnsupportedOperationException()
+        val inflater = LayoutInflater.from(parent!!.getContext())
+        return when(viewType.ushr(EventElement.MASK_SHIFT)) {
+            EventElement.HEADER_MASK -> HeaderViewHolder(inflater.inflate(R.layout.item_header, parent, false) as TextView)
+            else -> DataViewHolder(inflater.inflate(R.layout.item_project, parent, false))
+        }
     }
 
     abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

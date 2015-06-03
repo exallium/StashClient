@@ -13,15 +13,25 @@ import com.exallium.rxrecyclerview.lib.event.Event
 import com.exallium.rxrecyclerview.lib.operators.ElementGenerationOperator
 import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.controller.adapters.ProjectsAdapter
+import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.model.stash.Core
+import com.exallium.stashclient.app.model.stash.Page
 import com.exallium.stashclient.app.model.stash.Project
 import com.exallium.stashclient.app.model.stash.StashApiManager
 import kotlinx.android.synthetic.fragment_projects.*
 import rx.Observable
+import rx.Subscriber
+import rx.subjects.PublishSubject
 
 public class ProjectsFragment : Fragment() {
 
     var layoutManager: RecyclerView.LayoutManager? = null
+    var pageSubject: PublishSubject<Page<Project>> = PublishSubject.create()
+    var restAdapter: Core.Projects? = null
+
+    companion object {
+        val TAG = ProjectsFragment.javaClass.getSimpleName()
+    }
 
     object groupComparator : GroupComparator<String, Project> {
         override fun getEmptyEvent(p0: Event.TYPE?): Event<String, Project>? {
@@ -43,7 +53,7 @@ public class ProjectsFragment : Fragment() {
         }
 
         override fun getGroupKey(p0: Event<String, Project>?): String? {
-            throw UnsupportedOperationException()
+            return p0?.getValue()?.name?.charAt(0)?.toUpperCase().toString()
         }
     }
 
@@ -57,16 +67,39 @@ public class ProjectsFragment : Fragment() {
         recyclerView.setLayoutManager(layoutManager)
 
         val account = getArguments().getParcelable<Account>("com.exallium.stashclient.ACCOUNT")
-        val restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
+        restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
                 .getAdapter(javaClass<Core.Projects>())
-        val projectsObservable = restAdapter.retrieve().flatMap {
+        val projectsObservable = pageSubject.flatMap {
             it -> Observable.from(it.values)
         }.map {
             Event(Event.TYPE.ADD, it.key, it)
         }.lift(ElementGenerationOperator.Builder<String, Project>(groupComparator).hasHeader(true).build())
+                .onBackpressureBuffer()
 
         val viewAdapter = ProjectsAdapter(projectsObservable)
+        restAdapter?.retrieve()?.subscribe(RestPageSubscriber())
+
         recyclerView.setAdapter(viewAdapter)
+    }
+
+    private inner class RestPageSubscriber : Subscriber<Page<Project>>() {
+        override fun onError(e: Throwable?) {
+            Logger.emit(TAG, "RestPageProblem", e)
+        }
+
+        override fun onCompleted() {
+            unsubscribe()
+        }
+
+        override fun onNext(t: Page<Project>?) {
+            if (t != null) {
+                pageSubject.onNext(t)
+                if (!t.isLastPage) {
+                    restAdapter?.retrieve(start = t.nextPageStart)?.subscribe(RestPageSubscriber())
+                }
+            }
+        }
+
     }
 
 }

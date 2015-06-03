@@ -196,7 +196,8 @@ public interface Core {
 
         @GET(projectsPath)
         fun retrieve(@Query("name") projectName: String = "",
-                     @Query("permission") projectPermission: ProjectPermission = ProjectPermission.PROJECT_READ): Observable<Page<Project>>
+                     @Query("permission") projectPermission: ProjectPermission = ProjectPermission.PROJECT_READ,
+                     @Query("start") start: Int = 0): Observable<Page<Project>>
 
         @PUT(projectPath)
         fun update(@Path("projectKey") projectKey: String, @Body project: Project): Observable<Project>
