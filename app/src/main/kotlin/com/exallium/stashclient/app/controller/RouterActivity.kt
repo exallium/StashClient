@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import com.exallium.stashclient.app.AbstractLoggingSubscriber
+import com.exallium.stashclient.app.Constants
 import com.exallium.stashclient.app.R
 import rx.subjects.PublishSubject
 
@@ -51,10 +52,11 @@ public class RouterActivity : Activity() {
             requestFragment(RouteRequest(Route.LOGIN))
         } else {
             // First thing's first, figure out where we're going
-            val defaultAccountName = getSharedPreferences("com.exallium.stashclient.PREFERENCES", Context.MODE_PRIVATE).getString("com.exallium.stashclient.DEFAULT_ACCOUNT", null)
+            val defaultAccountName = getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                    .getString(Constants.ACCOUNT_KEY, null)
             val accountManager = AccountManager.get(this)
 
-            val defaultAccountList = accountManager.getAccountsByType("com.exallium.stashclient.ACCOUNT").filter {
+            val defaultAccountList = accountManager.getAccountsByType(Constants.ACCOUNT_KEY).filter {
                 it.name.equals(defaultAccountName)
             }
 
@@ -65,7 +67,7 @@ public class RouterActivity : Activity() {
                 // Go to home page
                 account = defaultAccountList.get(0)
                 val bundle = Bundle()
-                bundle.putParcelable("com.exallium.stashclient.ACCOUNT", account)
+                bundle.putParcelable(Constants.ACCOUNT_KEY, account)
                 requestFragment(RouteRequest(Route.PROJECTS, bundle))
             }
         }

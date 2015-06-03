@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.exallium.stashclient.app.AbstractLoggingSubscriber
+import com.exallium.stashclient.app.Constants
 import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.model.stash.Core
@@ -43,7 +44,7 @@ public class LoginFragment: Fragment() {
 
                     // Register the auth info using AbstractAccountAuthenticator
                     val account = Account("%s@%s".format(username.getText().toString(), serverInfo),
-                            "com.exallium.stashclient.ACCOUNT")
+                            Constants.ACCOUNT_KEY)
                     val accountManager = AccountManager.get(getActivity())
                     val accountCreated = accountManager.addAccountExplicitly(account,
                             password.getText().toString(), null)
@@ -81,14 +82,14 @@ public class LoginFragment: Fragment() {
             Logger.emit(TAG, "Login Success")
 
 
-            getActivity().getSharedPreferences("com.exallium.stashclient.PREFERENCES", Context.MODE_PRIVATE)
-                    .edit().putString("com.exallium.stashclient.ACCOUNT", account.name).apply()
+            getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                    .edit().putString(Constants.ACCOUNT_KEY, account.name).apply()
 
-            if ("com.exallium.stashclient.LOGIN".equals(getActivity().getIntent().getAction())) {
+            if (Constants.LOGIN_ACTION.equals(getActivity().getIntent().getAction())) {
                 getActivity().finish()
             } else {
                 val bundle = Bundle()
-                bundle.putParcelable("com.exallium.stashclient.ACCOUNT", account)
+                bundle.putParcelable(Constants.ACCOUNT_KEY, account)
                 RouterActivity.routeRequestHandler.onNext(RouterActivity
                         .RouteRequest(RouterActivity.Route.PROJECTS, bundle))
             }

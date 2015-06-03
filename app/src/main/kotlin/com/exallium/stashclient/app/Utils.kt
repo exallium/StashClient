@@ -16,6 +16,13 @@ public abstract class AbstractLoggingSubscriber<T>(val tag: String): Subscriber<
 
 }
 
+public object Constants {
+    val PREFERENCES = "com.exallium.stashclient.PREFERENCES"
+    val ACCOUNT_KEY = "com.exallium.stashclient.ACCOUNT"
+
+    val LOGIN_ACTION = "com.exallium.stashclient.LOGIN"
+}
+
 public fun Account.getApiUrl(): String {
     return this.name.substring(this.name.indexOf('@') + 1)
 }
