@@ -81,17 +81,13 @@ public class LoginFragment: Fragment() {
             // Do Login
             Logger.emit(TAG, "Login Success")
 
-
-            getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
-                    .edit().putString(Constants.ACCOUNT_KEY, account.name).apply()
+            StashAccountManager.Factory.getInstance(getActivity()).setDefaultAccount(account)
 
             if (Constants.LOGIN_ACTION.equals(getActivity().getIntent().getAction())) {
                 getActivity().finish()
             } else {
-                val bundle = Bundle()
-                bundle.putParcelable(Constants.ACCOUNT_KEY, account)
                 RouterActivity.routeRequestHandler.onNext(RouterActivity
-                        .RouteRequest(RouterActivity.Route.PROJECTS, bundle))
+                        .RouteRequest(RouterActivity.Route.PROJECTS))
             }
         }
 

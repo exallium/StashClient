@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:paddingTop="16dp"
+              android:paddingBottom="16dp"
               android:paddingLeft="@dimen/abc_action_bar_content_inset_material"
               android:paddingRight="@dimen/abc_action_bar_content_inset_material"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="72dp">
+    <ImageView android:id="@+id/project_avatar"
+               android:layout_width="40dp"
+               android:layout_height="40dp" />
     <TextView android:id="@+id/project_name"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:textSize="@dimen/abc_text_size_body_1_material" />
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:textSize="@dimen/abc_text_size_title_material" />
 </LinearLayout>

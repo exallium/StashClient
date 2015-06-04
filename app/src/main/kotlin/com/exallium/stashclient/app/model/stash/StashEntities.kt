@@ -23,7 +23,9 @@ public data class Project(var key: String,
                           var name: String,
                           var description: String,
                           var public: Boolean,
-                          var type: String)
+                          var type: String,
+                          var link: Link?)
+public data class Link(var url: String, var rel: String)
 public data class Permitted(val permitted: Boolean)
 public data class Branch
 public data class Change

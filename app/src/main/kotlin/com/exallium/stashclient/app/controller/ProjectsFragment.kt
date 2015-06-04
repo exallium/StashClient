@@ -66,7 +66,13 @@ public class ProjectsFragment : Fragment() {
         layoutManager = LinearLayoutManager(getActivity())
         recyclerView.setLayoutManager(layoutManager)
 
-        val account = getArguments().getParcelable<Account>("com.exallium.stashclient.ACCOUNT")
+        val account = StashAccountManager.Factory.getInstance(getActivity()).account
+        if (account == null) {
+            // Boot them to the login screen
+            RouterActivity.routeRequestHandler.onNext(RouterActivity.RouteRequest(RouterActivity.Route.LOGIN))
+            return
+        }
+
         restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
                 .getAdapter(javaClass<Core.Projects>())
         val projectsObservable = pageSubject.flatMap {

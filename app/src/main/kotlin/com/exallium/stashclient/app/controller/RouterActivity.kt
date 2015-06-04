@@ -10,6 +10,8 @@ import android.os.Bundle
 import com.exallium.stashclient.app.AbstractLoggingSubscriber
 import com.exallium.stashclient.app.Constants
 import com.exallium.stashclient.app.R
+import com.squareup.picasso.OkHttpDownloader
+import com.squareup.picasso.Picasso
 import rx.subjects.PublishSubject
 
 import kotlinx.android.synthetic.activity_router.*
@@ -45,31 +47,16 @@ public class RouterActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_router)
 
+        val accountManager = StashAccountManager.Factory.getInstance(this)
+
         toolbar.setTitle(R.string.app_name)
         toolbar.setTitleTextColor(Color.WHITE)
 
-        if ("com.exallium.stashclient.LOGIN".equals(getIntent().getAction())) {
+        if (Constants.LOGIN_ACTION.equals(getIntent().getAction())) {
             requestFragment(RouteRequest(Route.LOGIN))
         } else {
-            // First thing's first, figure out where we're going
-            val defaultAccountName = getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
-                    .getString(Constants.ACCOUNT_KEY, null)
-            val accountManager = AccountManager.get(this)
-
-            val defaultAccountList = accountManager.getAccountsByType(Constants.ACCOUNT_KEY).filter {
-                it.name.equals(defaultAccountName)
-            }
-
-            if (defaultAccountList.isEmpty()) {
-                // Go to login
-                requestFragment(RouteRequest(Route.LOGIN))
-            } else {
-                // Go to home page
-                account = defaultAccountList.get(0)
-                val bundle = Bundle()
-                bundle.putParcelable(Constants.ACCOUNT_KEY, account)
-                requestFragment(RouteRequest(Route.PROJECTS, bundle))
-            }
+            val defaultAccount = accountManager.account
+            requestFragment(if (defaultAccount == null) RouteRequest(Route.LOGIN) else RouteRequest(Route.PROJECTS))
         }
     }
 

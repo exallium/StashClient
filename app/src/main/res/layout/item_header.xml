@@ -3,8 +3,9 @@
           android:paddingLeft="@dimen/abc_action_bar_content_inset_material"
           android:paddingRight="@dimen/abc_action_bar_content_inset_material"
           android:textSize="@dimen/abc_text_size_subhead_material"
+          android:gravity="center_vertical"
           android:background="@color/primary"
           android:text="@string/app_name"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="48dp">
 </TextView>

@@ -4,11 +4,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.exallium.rxrecyclerview.lib.RxRecyclerViewAdapter
 import com.exallium.rxrecyclerview.lib.element.EventElement
 import com.exallium.stashclient.app.R
+import com.exallium.stashclient.app.controller.StashAccountManager
+import com.exallium.stashclient.app.getApiUrl
+import com.exallium.stashclient.app.model.stash.Core
 import com.exallium.stashclient.app.model.stash.Project
+import com.squareup.picasso.Picasso
 import rx.Observable
 
 public class ProjectsAdapter(observable: Observable<EventElement<String, Project>>) : RxRecyclerViewAdapter<String, Project, ProjectsAdapter.ViewHolder>(observable) {
@@ -33,14 +38,21 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
     class DataViewHolder(itemView: View) : ViewHolder(itemView) {
 
         val name: TextView
+        val avatar: ImageView
 
         init {
             name = itemView.findViewById(R.id.project_name) as TextView
+            avatar = itemView.findViewById(R.id.project_avatar) as ImageView
         }
 
 
         override fun onBind(event: EventElement<String, Project>) {
             name.setText(event.getData().getValue().name)
+            val account = StashAccountManager.Factory.getInstance(name.getContext()).account
+            if (account != null)
+                Picasso.with(avatar.getContext())
+                        .load(Core.Projects.Avatar
+                            .getUri(account.getApiUrl(), event.getData().getValue())).fit().into(avatar)
         }
     }
 

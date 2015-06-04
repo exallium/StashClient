@@ -1,6 +1,7 @@
 package com.exallium.stashclient.app.model.stash
 
 import android.net.Uri
+import com.exallium.stashclient.app.controller.StashAccountManager
 import retrofit.http.*
 import retrofit.mime.TypedFile
 import rx.Observable
@@ -213,8 +214,10 @@ public interface Core {
         fun update(@Path("projectKey") projectKey: String, @Part("avatar") image: TypedFile)
 
         public object Avatar {
-            public fun getUri(projectKey: String, s: Int = 0): Uri {
-                return Uri.parse(projectsPath + projectKey + "/avatar?s=" + s.toString())
+            public fun getUri(server: String, project: Project, s: Int = 0): Uri {
+                return if (project.link != null)
+                    Uri.parse(server + corePath + project.link?.url + "/avatar.png?s=" + s.toString())
+                else Uri.EMPTY
             }
         }
 
