@@ -86,8 +86,8 @@ public class LoginFragment: Fragment() {
             if (Constants.LOGIN_ACTION.equals(getActivity().getIntent().getAction())) {
                 getActivity().finish()
             } else {
-                RouterActivity.routeRequestHandler.onNext(RouterActivity
-                        .RouteRequest(RouterActivity.Route.PROJECTS))
+                Router.requestPublisher.onNext(Router
+                        .Request(Router.Route.PROJECTS))
             }
         }
 

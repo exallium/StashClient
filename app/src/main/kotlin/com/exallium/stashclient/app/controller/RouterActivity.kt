@@ -22,22 +22,15 @@ public class RouterActivity : Activity() {
 
     companion object {
         private val TAG = RouterActivity.javaClass.getSimpleName()
-        public val routeRequestHandler: PublishSubject<RouteRequest> = PublishSubject.create()
     }
 
-    public data class RouteRequest(val route: Route, val bundle: Bundle? = null)
-
-    public enum class Route {
-        LOGIN,
-        PROJECTS
-    }
 
     var account: Account? = null
-    var currentRequest: RouteRequest? = null
+    var currentRequest: Router.Request? = null
     var currentSubscriber: RouteRequestSubscriber? = null
 
-    private inner class RouteRequestSubscriber : AbstractLoggingSubscriber<RouteRequest>(TAG) {
-        override fun onNext(t: RouteRequest?) {
+    private inner class RouteRequestSubscriber : AbstractLoggingSubscriber<Router.Request>(TAG) {
+        override fun onNext(t: Router.Request?) {
             if (t != null)
                 requestFragment(t)
         }
@@ -53,28 +46,28 @@ public class RouterActivity : Activity() {
         toolbar.setTitleTextColor(Color.WHITE)
 
         if (Constants.LOGIN_ACTION.equals(getIntent().getAction())) {
-            requestFragment(RouteRequest(Route.LOGIN))
+            requestFragment(Router.Request(Router.Route.LOGIN))
         } else {
             val defaultAccount = accountManager.account
-            requestFragment(if (defaultAccount == null) RouteRequest(Route.LOGIN) else RouteRequest(Route.PROJECTS))
+            requestFragment(if (defaultAccount == null) Router.Request(Router.Route.LOGIN) else Router.Request(Router.Route.PROJECTS))
         }
     }
 
-    private fun requestFragment(routeRequest: RouteRequest) {
-        if (currentRequest != routeRequest) {
+    private fun requestFragment(request: Router.Request) {
+        if (currentRequest != request) {
             var transaction = getFragmentManager().beginTransaction()
-            transaction.add(R.id.fragment_container, createFragment(routeRequest))
+            transaction.replace(R.id.fragment_container, createFragment(request))
             if (currentRequest != null)
                 transaction.addToBackStack(null)
             transaction.commit()
-            currentRequest = routeRequest
+            currentRequest = request
         }
     }
 
     override fun onResume() {
         super.onResume()
         currentSubscriber = RouteRequestSubscriber()
-        routeRequestHandler.subscribe(currentSubscriber)
+        Router.requestPublisher.subscribe(currentSubscriber)
     }
 
     override fun onPause() {

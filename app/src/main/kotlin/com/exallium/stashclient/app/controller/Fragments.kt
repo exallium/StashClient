@@ -3,10 +3,11 @@ package com.exallium.stashclient.app.controller
 import android.app.Fragment
 
 
-public fun createFragment(request: RouterActivity.RouteRequest): Fragment {
+public fun createFragment(request: Router.Request): Fragment {
     val fragment = when(request.route) {
-        RouterActivity.Route.LOGIN -> LoginFragment()
-        RouterActivity.Route.PROJECTS -> ProjectsFragment()
+        Router.Route.LOGIN -> LoginFragment()
+        Router.Route.PROJECTS -> ProjectsFragment()
+        Router.Route.PROJECT -> ProjectFragment()
     }
     fragment.setArguments(request.bundle)
     return fragment

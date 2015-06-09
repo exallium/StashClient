@@ -1,5 +1,7 @@
 package com.exallium.stashclient.app.model.stash
 
+import com.exallium.rxrecyclerview.lib.GroupComparator
+
 public data class Group
 public data class User
 public data class Page<T>(var size: Int,
@@ -17,14 +19,37 @@ public data class Permission<T>(val t: T, val permission: GlobalPermission)
 public data class ApplicationProperties()
 public data class LogInfo(val logLevel: LogLevel)
 public data class MarkupPreview(val html: String)
-public data class Repository
+
+public data class Repository(var slug: String,
+                             var id: Int,
+                             var name: String,
+                             var scmId: String,
+                             var state: String,
+                             var statusMessage: String,
+                             var forkable: String,
+                             var project: Project,
+                             var public: Boolean,
+                             var cloneUrl: String,
+                             var link: Link?): Comparable<Repository> {
+    override fun compareTo(other: Repository): Int {
+        return name.compareTo(other.name)
+    }
+}
+
 public data class Project(var key: String,
                           var id: Int,
                           var name: String,
                           var description: String,
                           var public: Boolean,
                           var type: String,
-                          var link: Link?)
+                          var link: Link?): Comparable<Project> {
+    override fun compareTo(other: Project): Int {
+        return name.compareTo(other.name)
+    }
+
+}
+
+
 public data class Link(var url: String, var rel: String)
 public data class Permitted(val permitted: Boolean)
 public data class Branch

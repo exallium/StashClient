@@ -20,7 +20,7 @@ import java.util.*
  * Adapters are cached, so we only create each once, but we do it lazily to keep object
  * creation to a minimum.
  */
-public class StashApiManager(val context: Context, val account: Account) {
+public class StashApiManager(val context: Context) {
 
     val restAdapter: RestAdapter
 
@@ -28,7 +28,7 @@ public class StashApiManager(val context: Context, val account: Account) {
 
     init {
         // Break account name into user and api
-        val apiUrl = account.getApiUrl()
+        val apiUrl = StashAccountManager.Factory.getInstance(context).account?.getApiUrl()
         restAdapter = RestAdapter.Builder().setEndpoint(apiUrl)
                 .setRequestInterceptor(StashAccountManager.Factory.getInstance(context)).build()
     }
@@ -51,7 +51,7 @@ public class StashApiManager(val context: Context, val account: Account) {
         public fun getOrCreate(context: Context, account: Account): StashApiManager {
             var manager = managers.get(account.name)
             if (manager == null) {
-                manager = StashApiManager(context, account)
+                manager = StashApiManager(context)
                 managers.put(account.name, manager)
             }
             return manager

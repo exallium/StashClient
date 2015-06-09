@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.exallium.rxrecyclerview.lib.GroupComparator
 import com.exallium.rxrecyclerview.lib.event.Event
 import com.exallium.rxrecyclerview.lib.operators.ElementGenerationOperator
+import com.exallium.stashclient.app.GenericComparator
 import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.controller.adapters.ProjectsAdapter
 import com.exallium.stashclient.app.controller.logging.Logger
@@ -33,30 +34,11 @@ public class ProjectsFragment : Fragment() {
         val TAG = ProjectsFragment.javaClass.getSimpleName()
     }
 
-    object groupComparator : GroupComparator<String, Project> {
-        override fun getEmptyEvent(p0: Event.TYPE?): Event<String, Project>? {
-            return Event<String, Project>(p0, "", null)
-        }
-
-        override fun compare(lhs: Event<String, Project>?, rhs: Event<String, Project>?): Int {
-            if (lhs?.getValue() == null)
-                return -1
-            if (rhs?.getValue() == null)
-                return 1
-
-            val lname = lhs?.getValue()?.name
-            val rname = rhs?.getValue()?.name
-            if (lname != null && rname != null)
-                return lname.compareTo(rname)
-
-            return 0
-        }
-
+    object groupComparator : GenericComparator<Project>() {
         override fun getGroupKey(p0: Event<String, Project>?): String? {
             return p0?.getValue()?.name?.charAt(0)?.toUpperCase().toString()
         }
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_projects, container, false)
@@ -66,12 +48,8 @@ public class ProjectsFragment : Fragment() {
         layoutManager = LinearLayoutManager(getActivity())
         recyclerView.setLayoutManager(layoutManager)
 
-        val account = StashAccountManager.Factory.getInstance(getActivity()).account
-        if (account == null) {
-            // Boot them to the login screen
-            RouterActivity.routeRequestHandler.onNext(RouterActivity.RouteRequest(RouterActivity.Route.LOGIN))
-            return
-        }
+        // Boot them to the login screen
+        val account = StashAccountManager.Factory.getInstance(getActivity()).account ?: return
 
         restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
                 .getAdapter(javaClass<Core.Projects>())

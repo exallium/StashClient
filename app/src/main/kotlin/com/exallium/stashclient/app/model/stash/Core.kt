@@ -274,7 +274,8 @@ public interface Core {
 
         public interface Repos {
             @GET(projectRepos)
-            fun retrieve(@Path("projectKey") projectKey: String): Observable<Page<Repository>>
+            fun retrieve(@Path("projectKey") projectKey: String,
+                         @Query("start") start: Int = 0): Observable<Page<Repository>>
 
             @POST(projectRepos)
             fun create(@Path("projectKey") projectKey: String, @Body repository: Repository): Observable<Repository>
