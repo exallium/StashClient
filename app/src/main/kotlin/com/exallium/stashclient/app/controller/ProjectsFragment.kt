@@ -13,6 +13,8 @@ import com.exallium.rxrecyclerview.lib.event.Event
 import com.exallium.rxrecyclerview.lib.operators.ElementGenerationOperator
 import com.exallium.stashclient.app.GenericComparator
 import com.exallium.stashclient.app.R
+import com.exallium.stashclient.app.RetroFitElementTransformer
+import com.exallium.stashclient.app.RetroFitPageTransformer
 import com.exallium.stashclient.app.controller.adapters.ProjectsAdapter
 import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.model.stash.Core
@@ -53,12 +55,14 @@ public class ProjectsFragment : Fragment() {
 
         restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
                 .getAdapter(javaClass<Core.Projects>())
-        val projectsObservable = pageSubject.flatMap {
-            it -> Observable.from(it.values)
-        }.map {
-            Event(Event.TYPE.ADD, it.key, it)
-        }.lift(ElementGenerationOperator.Builder<String, Project>(groupComparator).hasHeader(true).build())
-                .onBackpressureBuffer()
+
+        val projectsObservable = pageSubject
+                .compose(RetroFitPageTransformer<Project>())
+                .compose(RetroFitElementTransformer(
+                        groupComparator = groupComparator,
+                        hasHeader = true,
+                        getKey = { it.key }
+                ))
 
         val viewAdapter = ProjectsAdapter(projectsObservable)
         restAdapter?.retrieve()?.subscribe(RestPageSubscriber())

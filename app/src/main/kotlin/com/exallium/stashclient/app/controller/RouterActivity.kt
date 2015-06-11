@@ -24,7 +24,6 @@ public class RouterActivity : Activity() {
         private val TAG = RouterActivity.javaClass.getSimpleName()
     }
 
-
     var account: Account? = null
     var currentRequest: Router.Request? = null
     var currentSubscriber: RouteRequestSubscriber? = null
@@ -40,26 +39,34 @@ public class RouterActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_router)
 
-        val accountManager = StashAccountManager.Factory.getInstance(this)
 
         toolbar.setTitle(R.string.app_name)
         toolbar.setTitleTextColor(Color.WHITE)
 
         if (Constants.LOGIN_ACTION.equals(getIntent().getAction())) {
+            val loginBundle = Bundle()
+            loginBundle.putString(Constants.NEXT_PAGE, Router.Route.PROJECTS.name())
             requestFragment(Router.Request(Router.Route.LOGIN))
         } else {
-            val defaultAccount = accountManager.account
-            requestFragment(if (defaultAccount == null) Router.Request(Router.Route.LOGIN) else Router.Request(Router.Route.PROJECTS))
+            requestFragment(Router.Request(Router.Route.PROJECTS))
         }
     }
 
     private fun requestFragment(request: Router.Request) {
+        val accountManager = StashAccountManager.Factory.getInstance(this)
+        val account = accountManager.account
+        if (account == null && request.route != Router.Route.LOGIN) {
+            val bundle = Bundle()
+            bundle.putString(Constants.NEXT_PAGE, request.route.name())
+            bundle.putBundle(Constants.NEXT_BUNDLE, request.bundle)
+            requestFragment(Router.Request(Router.Route.LOGIN))
+        }
+
         if (currentRequest != request) {
             var transaction = getFragmentManager().beginTransaction()
             transaction.replace(R.id.fragment_container, createFragment(request))
-            if (currentRequest != null)
-                transaction.addToBackStack(null)
-            transaction.commit()
+                .addToBackStack(null)
+                .commit()
             currentRequest = request
         }
     }

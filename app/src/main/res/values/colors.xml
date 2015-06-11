@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#2196F3</color>
-    <color name="primaryDark">#0D47A1</color>
-    <color name="accent">#F3A021</color>
+    <!-- Atlassian Style Guideline Primary Colors -->
+    <color name="atlassianPrimaryBlue">#3179C2</color>
+    <color name="atlassianPrimaryNavy">#205081</color>
+    <color name="atlassianPrimaryLightGrey">#f5f5f5</color>
+    <color name="atlassianPrimaryCharcoal">#333333</color>
+    <color name="atlassianPrimaryPaleBlue">#ebf2f9</color>
+    <color name="atlassianPrimaryMediumGrey">#707070</color>
+    <color name="atlassianPrimaryGreen">#14892c</color>
+    <color name="atlassianPrimaryYellow">#f6c342</color>
+    <color name="atlassianPrimaryRed">#d04437</color>
+
+    <!-- Atlassian Style Guideline Secondary Colors -->
+    <color name="atlassianSecondaryLimeGreen">#8eb021</color>
+    <color name="atlassianSecondaryMidGreen">#67ab49</color>
+    <color name="atlassianSecondaryViolet">#654982</color>
+    <color name="atlassianSecondaryMauve">#ac707a</color>
+    <color name="atlassianSecondaryBrightPink">#f15c75</color>
+    <color name="atlassianSecondaryRosie">#f691b2</color>
+    <color name="atlassianSecondaryGray">#999999</color>
+    <color name="atlassianSecondaryAshGray">#cccccc</color>
+    <color name="atlassianSecondarySilver">#e9e9e9</color>
+    <color name="atlassianSecondaryBrown">#815b3a</color>
+    <color name="atlassianSecondaryCheetoOrange">#f79232</color>
+    <color name="atlassianSecondaryTan">#f1a257</color>
+    <color name="atlassianSecondaryLightBrown">#d39c3f</color>
+    <color name="atlassianSecondaryCyan">#59afe1</color>
+    <color name="atlassianSecondarySlate">#4a6785</color>
+    <color name="atlassianSecondaryCoolBlue">#84bbc6</color>
+
+    <!-- Atlassian Style Guideline Derivative Colors -->
+    <color name="atlassianDerivativePaleBlue">#ccd9ea</color>
+    <color name="atlassianDerivativeBrightBlue">#1a8cff</color>
+    <color name="atlassianDerivativeDarkBrown">#594300</color>
+
+    <color name="primary">@color/atlassianPrimaryBlue</color>
+    <color name="primaryDark">@color/atlassianPrimaryNavy</color>
+    <color name="accent">@color/atlassianSecondaryLimeGreen</color>
 </resources>

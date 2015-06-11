@@ -86,8 +86,9 @@ public class LoginFragment: Fragment() {
             if (Constants.LOGIN_ACTION.equals(getActivity().getIntent().getAction())) {
                 getActivity().finish()
             } else {
-                Router.requestPublisher.onNext(Router
-                        .Request(Router.Route.PROJECTS))
+                val page = Router.Route.valueOf(getArguments().getString(Constants.NEXT_PAGE))
+                val bundle = getArguments().getBundle(Constants.NEXT_BUNDLE)
+                Router.requestPublisher.onNext(Router.Request(page, bundle))
             }
         }
 

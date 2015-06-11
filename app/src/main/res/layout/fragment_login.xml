@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:padding="16dp"
+              android:background="@color/atlassianPrimaryNavy"
+              android:padding="32dp"
               android:weightSum="100"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -9,27 +10,40 @@
               android:layout_height="0dip"
               android:layout_weight="40"
               android:gravity="center"
-              android:textSize="@dimen/abc_text_size_display_1_material"
-              android:text="@string/fragment_login_title" />
+              android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+              android:textColor="@android:color/white"
+              android:text="@string/app_name" />
     <EditText android:id="@+id/username"
               android:hint="@string/fragment_login_username_hint"
+              style="@style/AppTheme.EditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content" />
+    <Space android:layout_height="16dp" android:layout_width="0dp" />
     <EditText android:id="@+id/password"
               android:hint="@string/fragment_login_password_hint"
+              style="@style/AppTheme.EditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="textPassword"/>
     <CheckBox android:id="@+id/serverToggle"
+              android:layout_marginTop="16dp"
               android:text="@string/fragment_login_server_toggle"
+              android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+              android:textColor="@android:color/white"
               android:checked="true"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"/>
+    <Space android:layout_height="16dp" android:layout_width="0dp" />
     <EditText android:id="@+id/server"
               android:hint="@string/fragment_login_server_hint"
+              style="@style/AppTheme.EditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content" />
+    <Space android:layout_height="16dp" android:layout_width="0dp" />
     <Button android:id="@+id/submit"
+            android:background="@drawable/button_submit"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fragment_login_submit" />

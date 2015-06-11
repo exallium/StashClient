@@ -2,10 +2,10 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:paddingLeft="@dimen/abc_action_bar_content_inset_material"
           android:paddingRight="@dimen/abc_action_bar_content_inset_material"
-          android:textSize="@dimen/abc_text_size_subhead_material"
           android:gravity="center_vertical"
-          android:background="@color/primary"
+          android:textColor="@color/atlassianPrimaryMediumGrey"
           android:text="@string/app_name"
+          android:textAppearance="@style/TextAppearance.AppCompat.Body2"
           android:layout_width="match_parent"
           android:layout_height="48dp">
 </TextView>

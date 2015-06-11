@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:paddingTop="16dp"
+              android:paddingBottom="16dp"
+              android:paddingLeft="@dimen/abc_action_bar_content_inset_material"
+              android:paddingRight="@dimen/abc_action_bar_content_inset_material"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="72dp">
+    <TextView
+            android:id="@+id/repository_icon"
+            android:text="@string/iconRepository"
+            android:textSize="@dimen/abc_text_size_display_1_material"
+            android:gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    <Space android:layout_width="16dp" android:layout_height="match_parent" />
+    <TextView android:id="@+id/repository_name"
+              android:layout_width="0dip"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:text="@string/name"
+              android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+              android:layout_weight="1" />
+</LinearLayout>
