@@ -72,21 +72,11 @@ public class ProjectFragment : Fragment() {
         val account = getAccount()
 
         if (account != null) {
-            val restAdapter = StashApiManager.Factory.getOrCreate(activity, account)
-                    .getAdapter(javaClass<Core.Projects>())
-
-            restAdapter.retrieve(projectKey = getArguments().getString(Constants.PROJECT_KEY))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
-                toolbarTarget = ToolbarTarget(toolbar)
-                toolbar.setTitle(it.name)
-                Picasso.with(activity)
-                        .load(Core.Projects.Avatar.getUri(account.getApiUrl(), it))
-                        .into(toolbarTarget)
-            }
-
+            val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
+            toolbar.setVisibility(View.VISIBLE)
+            toolbarTarget = ToolbarTarget(toolbar)
+            Core.Projects.Avatar.load(activity, toolbarTarget!!, getArguments().getString(Constants.PROJECT_KEY))
+            toolbar.setTitle(getArguments().getString(Constants.PROJECT_NAME))
         } else {
             Router.requestPublisher.onNext(Router.Request(Router.Route.LOGIN))
         }

@@ -65,14 +65,24 @@ public class StashAccountManager private constructor(val context: Context) : Int
     }
 
     public fun getDefaultAccount(): Account? {
-        val defaultAccountName = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
-                .getString(Constants.ACCOUNT_KEY, null)
+        val preferences = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+        val defaultAccountName = preferences.getString(Constants.ACCOUNT_KEY, null)
 
-        val defaultAccountList = accountManager.getAccountsByType(Constants.ACCOUNT_KEY).filter {
-            it.name.equals(defaultAccountName)
+        val accountList = accountManager.getAccountsByType(Constants.ACCOUNT_KEY)
+        val defaultAccountList = accountList.filter { it.name.equals(defaultAccountName) }
+
+        if (defaultAccountList.isEmpty()) {
+            val backupAccountList = accountList.filterNot { it.name.equals(defaultAccountName) }
+            val backupAccount = if (backupAccountList.size() != 0) backupAccountList.get(0) else null
+
+            backupAccount?.let {
+                preferences.edit().putString(Constants.ACCOUNT_KEY, backupAccount?.name).apply()
+            }
+
+            return backupAccount
+        } else {
+            return defaultAccountList.get(0)
         }
-
-        return if (defaultAccountList.isEmpty()) null else defaultAccountList.get(0)
     }
 
     public fun setDefaultAccount(account: Account) {

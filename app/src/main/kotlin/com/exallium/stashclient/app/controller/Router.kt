@@ -9,7 +9,8 @@ public object Router {
     public enum class Route {
         LOGIN,
         PROJECTS,
-        PROJECT
+        PROJECT,
+        REPOSITORY
     }
 
 }

@@ -1,10 +1,12 @@
 package com.exallium.stashclient.app.controller
 
 import android.accounts.Account
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +70,14 @@ public class ProjectsFragment : Fragment() {
         restAdapter?.retrieve()?.subscribe(RestPageSubscriber())
 
         recyclerView.setAdapter(viewAdapter)
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        val toolbar = activity?.findViewById(R.id.toolbar) as Toolbar
+        toolbar.setVisibility(View.VISIBLE)
+        toolbar.setLogo(null)
+        toolbar.setTitle(R.string.app_name)
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<Project>>() {

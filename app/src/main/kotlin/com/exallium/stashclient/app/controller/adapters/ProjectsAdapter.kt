@@ -53,9 +53,10 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
             description = itemView.findViewById(R.id.project_description) as TextView
             ViewObservable.clicks(itemView).forEach {
                 val project = project
-                if (project != null) {
+                project?.let {
                     val bundle = Bundle()
-                    bundle.putString(Constants.PROJECT_KEY, project.key)
+                    bundle.putString(Constants.PROJECT_KEY, project?.key)
+                    bundle.putString(Constants.PROJECT_NAME, project?.name)
                     Router.requestPublisher.onNext(Router.Request(Router.Route.PROJECT, bundle))
                 }
             }
@@ -69,9 +70,7 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
             description.setText(project?.description)
             val account = StashAccountManager.Factory.getInstance(name.getContext()).account
             if (account != null && project != null)
-                Picasso.with(avatar.getContext())
-                        .load(Core.Projects.Avatar.getUri(account.getApiUrl(), project))
-                        .fit().into(avatar)
+                Core.Projects.Avatar.load(avatar.getContext(), avatar, project.key)
         }
     }
 

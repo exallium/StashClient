@@ -40,6 +40,7 @@ public object Constants {
 
     // Stash API Information
     val PROJECT_KEY = "com.exallium.stashclient.PROJECT"
+    val PROJECT_NAME = "com.exallium.stashclient.PROJECT_NAME"
     val REPOSITORY_SLUG = "com.exallium.stashclient.REPO_SLUG"
 
     // Actions

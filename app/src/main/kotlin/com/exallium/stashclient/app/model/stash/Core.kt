@@ -1,7 +1,13 @@
 package com.exallium.stashclient.app.model.stash
 
+import android.content.Context
 import android.net.Uri
+import android.widget.ImageView
 import com.exallium.stashclient.app.controller.StashAccountManager
+import com.exallium.stashclient.app.getApiUrl
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.RequestCreator
+import com.squareup.picasso.Target
 import retrofit.http.*
 import retrofit.mime.TypedFile
 import rx.Observable
@@ -214,10 +220,22 @@ public interface Core {
         fun update(@Path("projectKey") projectKey: String, @Part("avatar") image: TypedFile)
 
         public object Avatar {
-            public fun getUri(server: String, project: Project, s: Int = 0): Uri {
-                return if (project.link != null)
-                    Uri.parse(server + corePath + project.link?.url + "/avatar.png?s=" + s.toString())
-                else Uri.EMPTY
+
+            public fun getUri(context: Context, projectKey: String): Uri {
+                val account = StashAccountManager.Factory.getInstance(context).account
+                return Uri.parse(account?.getApiUrl() + corePath + "/projects/" + projectKey + "/avatar.png")
+            }
+
+            public fun buildUpon(context: Context, projectKey: String): RequestCreator {
+                return Picasso.with(context).load(getUri(context, projectKey))
+            }
+
+            public fun load(context: Context, target: Target, projectKey: String) {
+                buildUpon(context, projectKey).into(target)
+            }
+
+            public fun load(context: Context, imageView: ImageView, projectKey: String) {
+                buildUpon(context, projectKey).into(imageView)
             }
         }
 
@@ -778,8 +796,22 @@ public interface Core {
 
     public interface Users{
         public object Avatar {
-            public fun getUri(userSlug: String): Uri {
-                return Uri.parse(corePath + "/users/" + userSlug + "/avatar.png")
+
+            public fun getUri(context: Context, userSlug: String): Uri {
+                val account = StashAccountManager.Factory.getInstance(context).account
+                return Uri.parse(account?.getApiUrl() + corePath + "/users/" + userSlug + "/avatar.png")
+            }
+
+            public fun buildUpon(context: Context, userSlug: String): RequestCreator {
+                return Picasso.with(context).load(getUri(context, userSlug))
+            }
+
+            public fun load(context: Context, target: Target, userSlug: String) {
+                buildUpon(context, userSlug).into(target)
+            }
+
+            public fun load(context: Context, imageView: ImageView, userSlug: String) {
+                buildUpon(context, userSlug).into(imageView)
             }
         }
 

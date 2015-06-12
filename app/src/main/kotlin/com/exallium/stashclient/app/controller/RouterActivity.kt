@@ -39,7 +39,6 @@ public class RouterActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_router)
 
-
         toolbar.setTitle(R.string.app_name)
         toolbar.setTitleTextColor(Color.WHITE)
 
@@ -63,10 +62,10 @@ public class RouterActivity : Activity() {
         }
 
         if (currentRequest != request) {
-            var transaction = getFragmentManager().beginTransaction()
-            transaction.replace(R.id.fragment_container, createFragment(request))
-                .addToBackStack(null)
-                .commit()
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, createFragment(request))
+                    .commit()
             currentRequest = request
         }
     }

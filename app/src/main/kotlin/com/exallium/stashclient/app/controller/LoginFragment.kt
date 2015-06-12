@@ -2,6 +2,7 @@ package com.exallium.stashclient.app.controller
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
@@ -66,6 +67,12 @@ public class LoginFragment: Fragment() {
                 }
             })
         }
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        val view = activity?.findViewById(R.id.toolbar)
+        view?.setVisibility(View.GONE)
     }
 
     private inner class LoginTestSubscriber(val account: Account): Subscriber<Page<Repository>>() {

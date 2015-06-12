@@ -37,11 +37,11 @@ public class ProjectAdapter(observable: Observable<EventElement<String, Reposito
             name = itemView.findViewById(R.id.repository_name) as TextView
             ViewObservable.clicks(itemView).forEach {
                 val repository = repository
-                if (repository != null) {
+                repository?.let {
                     val bundle = Bundle()
-                    bundle.putString(Constants.PROJECT_KEY, repository.project.key)
-                    bundle.putString(Constants.REPOSITORY_SLUG, repository.slug)
-                    Router.requestPublisher.onNext(Router.Request(Router.Route.PROJECT, bundle))
+                    bundle.putString(Constants.PROJECT_KEY, repository?.project?.key)
+                    bundle.putString(Constants.REPOSITORY_SLUG, repository?.slug)
+                    Router.requestPublisher.onNext(Router.Request(Router.Route.REPOSITORY, bundle))
                 }
             }
         }
