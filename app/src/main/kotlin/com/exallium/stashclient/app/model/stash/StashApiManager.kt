@@ -56,6 +56,11 @@ public class StashApiManager(val context: Context) {
             }
             return manager
         }
+
+        public fun getOrCreate(context: Context): StashApiManager {
+            val account = StashAccountManager.Factory.getInstance(context).account
+            return getOrCreate(context, account!!)
+        }
     }
 
 }

@@ -48,19 +48,19 @@ public class ProjectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), getAccount()!!)
-                .getAdapter(javaClass<Core.Projects.Repos>())
-        val recyclerView = view?.findViewById(R.id.recyclerView) as RecyclerView
-        recyclerView.setLayoutManager(LinearLayoutManager(getActivity()))
+            restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), getAccount()!!)
+                    .getAdapter(javaClass<Core.Projects.Repos>())
+            val recyclerView = view?.findViewById(R.id.recyclerView) as RecyclerView
+            recyclerView.setLayoutManager(LinearLayoutManager(getActivity()))
 
-        val repositoriesObservable = pageSubject
-                .compose(RetroFitPageTransformer<Repository>())
-                .compose(RetroFitElementTransformer(
-                        groupComparator = groupComparator,
-                        getKey = { it.name }
-                ))
+            val repositoriesObservable = pageSubject
+                    .compose(RetroFitPageTransformer<Repository>())
+                    .compose(RetroFitElementTransformer(
+                            groupComparator = groupComparator,
+                            getKey = { it.name }
+                    ))
 
-        val viewAdapter = ProjectAdapter(repositoriesObservable)
+            val viewAdapter = ProjectAdapter(repositoriesObservable)
         restAdapter?.retrieve(getArguments().getString(Constants.PROJECT_KEY))
                 ?.subscribe(RestPageSubscriber())
 

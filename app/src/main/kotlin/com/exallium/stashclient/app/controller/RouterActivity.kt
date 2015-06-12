@@ -43,8 +43,6 @@ public class RouterActivity : Activity() {
         toolbar.setTitleTextColor(Color.WHITE)
 
         if (Constants.LOGIN_ACTION.equals(getIntent().getAction())) {
-            val loginBundle = Bundle()
-            loginBundle.putString(Constants.NEXT_PAGE, Router.Route.PROJECTS.name())
             requestFragment(Router.Request(Router.Route.LOGIN))
         } else {
             val request = Router.flow.getBackstack().current().getScreen() as Router.Request
@@ -56,10 +54,7 @@ public class RouterActivity : Activity() {
         val accountManager = StashAccountManager.Factory.getInstance(this)
         val account = accountManager.account
         if (account == null && request.route != Router.Route.LOGIN) {
-            val bundle = Bundle()
-            bundle.putString(Constants.NEXT_PAGE, request.route.name())
-            bundle.putBundle(Constants.NEXT_BUNDLE, request.bundle)
-            requestFragment(Router.Request(Router.Route.LOGIN))
+            Router.flow.goTo(Router.Request(Router.Route.LOGIN))
         }
 
         if (currentRequest != request) {

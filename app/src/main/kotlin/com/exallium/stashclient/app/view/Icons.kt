@@ -14,4 +14,7 @@ public object IconManager {
             _typeface = Typeface.createFromAsset(context.getAssets(), "Atlassian-icons.ttf")
         return _typeface?:Typeface.DEFAULT
     }
+
+    public val iconDirectory: Char = '\uf131'
+    public val iconFile: Char = '\uf12e'
 }

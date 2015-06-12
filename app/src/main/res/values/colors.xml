@@ -34,6 +34,9 @@
     <color name="atlassianDerivativeBrightBlue">#1a8cff</color>
     <color name="atlassianDerivativeDarkBrown">#594300</color>
 
+    <color name="repositoryDirectory">@color/atlassianPrimaryBlue</color>
+    <color name="repositoryFile">@color/atlassianPrimaryMediumGrey</color>
+
     <color name="primary">@color/atlassianPrimaryBlue</color>
     <color name="primaryDark">@color/atlassianPrimaryNavy</color>
     <color name="accent">@color/atlassianSecondaryLimeGreen</color>

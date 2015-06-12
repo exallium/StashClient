@@ -1,6 +1,9 @@
 package com.exallium.stashclient.app.model.stash
 
 import com.exallium.rxrecyclerview.lib.GroupComparator
+import rx.Observable
+import rx.subjects.PublishSubject
+import java.util.*
 
 public data class Group
 public data class User
@@ -49,6 +52,45 @@ public data class Project(var key: String,
 
 }
 
+public class StashFile(val name: String): Comparable<StashFile> {
+
+    private val changeSubject: PublishSubject<StashFile> = PublishSubject.create()
+    public val children: TreeMap<String, StashFile> = TreeMap()
+
+    public fun isDirectory(): Boolean {
+        return children.size() != 0
+    }
+
+    override fun compareTo(other: StashFile): Int {
+        if (isDirectory() xor other.isDirectory()) {
+            return if (isDirectory()) 1 else -1
+        } else {
+            return name.compareTo(other.name)
+        }
+    }
+
+    public fun getOrCreate(path: String): StashFile {
+        val pathTokens = path.split('/')
+        val fileName = pathTokens[0]
+        var child = children.get(fileName)
+        if (child == null) {
+            child = StashFile(fileName)
+            children.put(fileName, child)
+            changeSubject.onNext(child)
+        }
+
+        return if (pathTokens.size() > 1) {
+            child.getOrCreate(pathTokens.drop(1).join("/"))
+        } else {
+            child
+        }
+
+    }
+
+    public fun getObservable() : Observable<StashFile> {
+        return changeSubject.mergeWith(Observable.from(children.map { it.getValue() }))
+    }
+}
 
 public data class Link(var url: String, var rel: String)
 public data class Permitted(val permitted: Boolean)

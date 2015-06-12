@@ -85,18 +85,9 @@ public class LoginFragment: Fragment() {
         }
 
         override fun onNext(t: Page<Repository>?) {
-            // Do Login
             Logger.emit(TAG, "Login Success")
-
             StashAccountManager.Factory.getInstance(getActivity()).setDefaultAccount(account)
-
-            if (Constants.LOGIN_ACTION.equals(getActivity().getIntent().getAction())) {
-                getActivity().finish()
-            } else {
-                val page = Router.Route.valueOf(getArguments().getString(Constants.NEXT_PAGE))
-                val bundle = getArguments().getBundle(Constants.NEXT_BUNDLE)
-                Router.flow.goTo(Router.Request(page, bundle))
-            }
+            getActivity().onBackPressed()
         }
 
     }
