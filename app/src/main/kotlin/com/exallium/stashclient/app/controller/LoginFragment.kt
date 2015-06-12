@@ -95,7 +95,7 @@ public class LoginFragment: Fragment() {
             } else {
                 val page = Router.Route.valueOf(getArguments().getString(Constants.NEXT_PAGE))
                 val bundle = getArguments().getBundle(Constants.NEXT_BUNDLE)
-                Router.requestPublisher.onNext(Router.Request(page, bundle))
+                Router.flow.goTo(Router.Request(page, bundle))
             }
         }
 

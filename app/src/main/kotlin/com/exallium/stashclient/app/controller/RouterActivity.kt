@@ -47,7 +47,8 @@ public class RouterActivity : Activity() {
             loginBundle.putString(Constants.NEXT_PAGE, Router.Route.PROJECTS.name())
             requestFragment(Router.Request(Router.Route.LOGIN))
         } else {
-            requestFragment(Router.Request(Router.Route.PROJECTS))
+            val request = Router.flow.getBackstack().current().getScreen() as Router.Request
+            requestFragment(request)
         }
     }
 
@@ -73,13 +74,18 @@ public class RouterActivity : Activity() {
     override fun onResume() {
         super.onResume()
         currentSubscriber = RouteRequestSubscriber()
-        Router.requestPublisher.subscribe(currentSubscriber)
+        Router.requestObservable.subscribe(currentSubscriber)
     }
 
     override fun onPause() {
         super.onPause()
         currentSubscriber?.unsubscribe()
         currentSubscriber = null
+    }
+
+    override fun onBackPressed() {
+        if (!Router.flow.goBack())
+            super.onBackPressed()
     }
 
 }

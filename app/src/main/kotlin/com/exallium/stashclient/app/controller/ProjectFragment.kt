@@ -78,7 +78,7 @@ public class ProjectFragment : Fragment() {
             Core.Projects.Avatar.load(activity, toolbarTarget!!, getArguments().getString(Constants.PROJECT_KEY))
             toolbar.setTitle(getArguments().getString(Constants.PROJECT_NAME))
         } else {
-            Router.requestPublisher.onNext(Router.Request(Router.Route.LOGIN))
+            Router.flow.goTo(Router.Request(Router.Route.LOGIN))
         }
 
     }
