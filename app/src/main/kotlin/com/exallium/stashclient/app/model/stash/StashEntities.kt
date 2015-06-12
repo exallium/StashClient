@@ -63,7 +63,7 @@ public class StashFile(val name: String): Comparable<StashFile> {
 
     override fun compareTo(other: StashFile): Int {
         if (isDirectory() xor other.isDirectory()) {
-            return if (isDirectory()) 1 else -1
+            return if (isDirectory()) -1 else 1
         } else {
             return name.compareTo(other.name)
         }

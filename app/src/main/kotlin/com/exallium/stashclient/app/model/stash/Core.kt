@@ -408,7 +408,8 @@ public interface Core {
             fun files(@Path("projectKey") projectKey: String,
                       @Path("repositorySlug") repositorySlug: String,
                       @Path("path") path: String = "",
-                      @Query("at") at: String = ""): Observable<Page<String>>
+                      @Query("at") at: String = "",
+                      @Query("start") start: Int = 0): Observable<Page<String>>
 
             public enum class TagOrder {
                 ALPHABETICAL,

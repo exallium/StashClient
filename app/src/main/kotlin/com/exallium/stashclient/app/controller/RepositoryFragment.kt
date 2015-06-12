@@ -6,8 +6,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.exallium.rxrecyclerview.lib.element.EmptyElement
 import com.exallium.rxrecyclerview.lib.event.Event
 import com.exallium.stashclient.app.*
+import com.exallium.stashclient.app.controller.adapters.EmptyAdapter
 import com.exallium.stashclient.app.controller.adapters.RepositoryAdapter
 import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.model.stash.Core
@@ -18,6 +20,8 @@ import com.exallium.stashclient.app.model.stash.StashFile
 import kotlinx.android.synthetic.fragment_projects.*
 import rx.Observable
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 
 public class RepositoryFragment : Fragment() {
@@ -29,7 +33,7 @@ public class RepositoryFragment : Fragment() {
     private val groupComparator = object : GenericComparator<StashFile>() {
 
         override fun getGroupKey(p0: Event<String, StashFile>?): String? {
-            return if (p0?.getValue()?.isDirectory()?:false) "a" else "b"
+            return "0"
         }
 
     }
@@ -50,17 +54,33 @@ public class RepositoryFragment : Fragment() {
         pageSubject.compose(RetroFitPageTransformer<String>())
                 ?.map {
                     baseStashFile.getOrCreate(it)
-                }?.subscribe()
+                }?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe(object : Subscriber<StashFile>() {
+            override fun onCompleted() {
+                recyclerView.swapAdapter(RepositoryAdapter(baseStashFile.getObservable()
+                        .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name }))
+                        .onBackpressureBuffer()
+                ), true)
+            }
 
-        recyclerView.setAdapter(RepositoryAdapter(baseStashFile.getObservable()
-            .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name + it.isDirectory() }))
-            .onBackpressureBuffer()
-        ))
+            override fun onError(e: Throwable?) {
+                Logger.emit(TAG, "Something bad happened", e)
+            }
+
+            override fun onNext(t: StashFile?) {
+                // Do nothing
+            }
+
+        })
 
         restAdapter?.files(
                 projectKey = getArguments().getString(Constants.PROJECT_KEY),
                 repositorySlug = getArguments().getString(Constants.REPOSITORY_SLUG))
+                ?.subscribeOn(Schedulers.io())
                 ?.subscribe(RestPageSubscriber())
+
+        recyclerView.setAdapter(EmptyAdapter<StashFile>(
+                Observable.just(EmptyElement(groupComparator.getEmptyEvent(Event.TYPE.ADD), groupComparator)),
+                "Loading File Data..."))
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<String>>() {
@@ -74,13 +94,16 @@ public class RepositoryFragment : Fragment() {
 
         override fun onNext(t: Page<String>?) {
             if (t != null) {
-
                 pageSubject.onNext(t)
                 if (!t.isLastPage) {
                     restAdapter?.files(
                             projectKey = getArguments().getString(Constants.PROJECT_KEY),
-                            repositorySlug = getArguments().getString(Constants.REPOSITORY_SLUG))
+                            repositorySlug = getArguments().getString(Constants.REPOSITORY_SLUG),
+                            start = t.nextPageStart)
+                            ?.subscribeOn(Schedulers.io())
                             ?.subscribe(RestPageSubscriber())
+                } else {
+                    pageSubject.onCompleted()
                 }
             }
         }
