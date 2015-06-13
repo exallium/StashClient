@@ -409,7 +409,8 @@ public interface Core {
                       @Path("repositorySlug") repositorySlug: String,
                       @Path("path") path: String = "",
                       @Query("at") at: String = "",
-                      @Query("start") start: Int = 0): Observable<Page<String>>
+                      @Query("start") start: Int = 0,
+                      @Query("limit") limit: Int = 100): Observable<Page<String>>
 
             public enum class TagOrder {
                 ALPHABETICAL,

@@ -52,30 +52,31 @@ public class RepositoryFragment : Fragment() {
         restAdapter = StashApiManager.Factory.getOrCreate(getActivity()).restAdapter.create(javaClass<Core.Projects.Repos>())
 
         pageSubject.compose(RetroFitPageTransformer<String>())
-                ?.map {
-                    baseStashFile.getOrCreate(it)
-                }?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe(object : Subscriber<StashFile>() {
-            override fun onCompleted() {
-                recyclerView.swapAdapter(RepositoryAdapter(baseStashFile.getObservable()
-                        .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name }))
-                        .onBackpressureBuffer()
-                ), true)
-            }
+                ?.map { baseStashFile.getOrCreate(it) }
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribeOn(Schedulers.computation())
+                ?.subscribe(object : Subscriber<StashFile>() {
+                    override fun onCompleted() {
+                        recyclerView.swapAdapter(RepositoryAdapter(baseStashFile.getObservable()
+                                .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name }))
+                                .onBackpressureBuffer()
+                        ), true)
+                    }
 
-            override fun onError(e: Throwable?) {
-                Logger.emit(TAG, "Something bad happened", e)
-            }
+                    override fun onError(e: Throwable?) {
+                        Logger.emit(TAG, "Something bad happened", e)
+                    }
 
-            override fun onNext(t: StashFile?) {
-                // Do nothing
-            }
-
-        })
+                    override fun onNext(t: StashFile?) {
+                        // Do nothing
+                    }
+                })
 
         restAdapter?.files(
                 projectKey = getArguments().getString(Constants.PROJECT_KEY),
                 repositorySlug = getArguments().getString(Constants.REPOSITORY_SLUG))
                 ?.subscribeOn(Schedulers.io())
+                ?.observeOn(Schedulers.io())
                 ?.subscribe(RestPageSubscriber())
 
         recyclerView.setAdapter(EmptyAdapter<StashFile>(
@@ -101,6 +102,7 @@ public class RepositoryFragment : Fragment() {
                             repositorySlug = getArguments().getString(Constants.REPOSITORY_SLUG),
                             start = t.nextPageStart)
                             ?.subscribeOn(Schedulers.io())
+                            ?.observeOn(Schedulers.io())
                             ?.subscribe(RestPageSubscriber())
                 } else {
                     pageSubject.onCompleted()
