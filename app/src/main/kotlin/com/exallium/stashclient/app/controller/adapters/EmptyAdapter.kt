@@ -12,21 +12,19 @@ import com.exallium.stashclient.app.R
 import rx.Observable
 
 
-public class EmptyAdapter<T>(observable: Observable<EventElement<String, T>>, val emptyText: String) : RxRecyclerViewAdapter<String, T, EmptyAdapter.EmptyViewHolder<T>>(observable) {
-    override fun onBindViewHolder(p0: EmptyViewHolder<T>?, p1: EventElement<String, T>?) {
-        p0?.bind(p1, emptyText)
+public class EmptyAdapter<T>(observable: Observable<EventElement<String, T>>, val emptyText: String) : RxRecyclerViewAdapter<String, T, EmptyAdapter.EmptyViewHolder>(observable) {
+    override fun onBindViewHolder(p0: EmptyViewHolder?, p1: EventElement<String, T>?) {
+        p0?.bind(emptyText)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): EmptyViewHolder<T>? {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): EmptyViewHolder? {
         return EmptyViewHolder(LayoutInflater.from(parent!!.getContext()).inflate(R.layout.item_header, parent, false))
     }
 
 
-    private class EmptyViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        public fun bind(element: EventElement<String, T>?, emptyText: String) {
-            val value = element?.getData()?.getValue()
-            if (value != null)
-                (itemView as TextView).setText(emptyText)
+    private class EmptyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        public fun bind(emptyText: String) {
+            (itemView as TextView).setText(emptyText)
         }
     }
 

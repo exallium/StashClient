@@ -22,6 +22,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 public class RepositoryFragment : Fragment() {
@@ -41,6 +42,7 @@ public class RepositoryFragment : Fragment() {
     private val pageSubject: PublishSubject<Page<String>> = PublishSubject.create()
     private val baseStashFile: StashFile = StashFile("ROOT")
     private var restAdapter: Core.Projects.Repos? = null
+    private var clickSubject: BehaviorSubject<StashFile> = BehaviorSubject.create(baseStashFile)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_projects, container, false)
@@ -57,10 +59,7 @@ public class RepositoryFragment : Fragment() {
                 ?.subscribeOn(Schedulers.computation())
                 ?.subscribe(object : Subscriber<StashFile>() {
                     override fun onCompleted() {
-                        recyclerView.swapAdapter(RepositoryAdapter(baseStashFile.getObservable()
-                                .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name }))
-                                .onBackpressureBuffer()
-                        ), true)
+                        clickSubject.subscribe(AdapterSubscriber())
                     }
 
                     override fun onError(e: Throwable?) {
@@ -82,6 +81,26 @@ public class RepositoryFragment : Fragment() {
         recyclerView.setAdapter(EmptyAdapter<StashFile>(
                 Observable.just(EmptyElement(groupComparator.getEmptyEvent(Event.TYPE.ADD), groupComparator)),
                 "Loading File Data..."))
+    }
+
+    private inner class AdapterSubscriber : Subscriber<StashFile>() {
+        override fun onNext(t: StashFile?) {
+            if (t != null) {
+                recyclerView.swapAdapter(RepositoryAdapter(t.getObservable()
+                        .compose(RetroFitElementTransformer(groupComparator, getKey = { it.name }))
+                        .onBackpressureBuffer(),
+                        clickSubject), true)
+            }
+        }
+
+        override fun onError(e: Throwable?) {
+            Logger.emit(TAG, "AdapterSubscriberProblem", e)
+        }
+
+        override fun onCompleted() {
+            unsubscribe()
+        }
+
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<String>>() {

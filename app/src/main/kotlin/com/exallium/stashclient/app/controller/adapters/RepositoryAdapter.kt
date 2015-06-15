@@ -11,18 +11,20 @@ import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.model.stash.StashFile
 import com.exallium.stashclient.app.view.IconManager
 import rx.Observable
+import rx.android.view.ViewObservable
+import rx.subjects.BehaviorSubject
 
-public class RepositoryAdapter(observable: Observable<EventElement<String, StashFile>>) : RxRecyclerViewAdapter<String, StashFile, RepositoryAdapter.ViewHolder>(observable) {
+public class RepositoryAdapter(observable: Observable<EventElement<String, StashFile>>, val clickSubject: BehaviorSubject<StashFile>) : RxRecyclerViewAdapter<String, StashFile, RepositoryAdapter.ViewHolder>(observable) {
 
     override fun onBindViewHolder(p0: ViewHolder?, p1: EventElement<String, StashFile>?) {
         p0?.bind(p1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        return ViewHolder(LayoutInflater.from(parent!!.getContext()).inflate(R.layout.item_repository, parent, false))
+        return ViewHolder(LayoutInflater.from(parent!!.getContext()).inflate(R.layout.item_repository, parent, false), clickSubject)
     }
 
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class ViewHolder(itemView: View, val clickSubject: BehaviorSubject<StashFile>) : RecyclerView.ViewHolder(itemView) {
 
         var file: StashFile? = null
         val icon: TextView
@@ -32,6 +34,11 @@ public class RepositoryAdapter(observable: Observable<EventElement<String, Stash
             icon = itemView.findViewById(R.id.repository_icon) as TextView
             icon.setTypeface(IconManager.getTypeface(icon.getContext()))
             name = itemView.findViewById(R.id.repository_name) as TextView
+
+            ViewObservable.clicks(itemView).forEach {
+                file?.let { clickSubject.onNext(file) }
+            }
+
         }
 
         public fun bind(element: EventElement<String, StashFile>?) {
