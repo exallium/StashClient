@@ -36,7 +36,9 @@ public class RepositoryAdapter(observable: Observable<EventElement<String, Stash
             name = itemView.findViewById(R.id.repository_name) as TextView
 
             ViewObservable.clicks(itemView).forEach {
-                file?.let { clickSubject.onNext(file) }
+                if (file?.isDirectory?:false) {
+                    clickSubject.onNext(file)
+                }
             }
 
         }
