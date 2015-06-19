@@ -6,6 +6,7 @@ import android.app.Fragment
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -48,7 +49,7 @@ public class ProjectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-            restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), getAccount()!!)
+            restAdapter = StashApiManager.Factory.get(getActivity())
                     .getAdapter(javaClass<Core.Projects.Repos>())
             val recyclerView = view?.findViewById(R.id.recyclerView) as RecyclerView
             recyclerView.setLayoutManager(LinearLayoutManager(getActivity()))
@@ -69,22 +70,14 @@ public class ProjectFragment : Fragment() {
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
-        val account = getAccount()
 
-        if (account != null) {
-            val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
-            toolbar.setVisibility(View.VISIBLE)
-            toolbarTarget = ToolbarTarget(toolbar)
-            Core.Projects.Avatar.load(activity, toolbarTarget!!, getArguments().getString(Constants.PROJECT_KEY))
-            toolbar.setTitle(getArguments().getString(Constants.PROJECT_NAME))
-        } else {
-            Router.flow.goTo(Router.Request(Router.Route.LOGIN))
-        }
-
-    }
-
-    private fun getAccount(): Account? {
-        return StashAccountManager.Factory.getInstance(getActivity()).account
+        val toolbar = activity.findViewById(R.id.toolbar) as Toolbar
+        toolbar.setVisibility(View.VISIBLE)
+        toolbarTarget = ToolbarTarget(toolbar)
+        Core.Projects.Avatar.load(activity, toolbarTarget!!, getArguments().getString(Constants.PROJECT_KEY))
+        toolbar.setTitle(getArguments().getString(Constants.PROJECT_NAME))
+        val drawer = activity.findViewById(R.id.drawer) as DrawerLayout?
+        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<Repository>>() {

@@ -6,6 +6,8 @@ import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,12 +54,12 @@ public class LoginFragment: Fragment() {
 
                     // Try a simple request
                     if (accountCreated) {
-                        val apiManager = StashApiManager.Factory.getOrCreate(getActivity(), account)
+                        val apiManager = StashApiManager.Factory.get(getActivity())
                         val adapter = apiManager.getAdapter(javaClass<Core.Profile.Repos>())
-
+                        StashAccountManager.Factory.get(getActivity()).setDefaultAccountName(account.name)
                         adapter.retrieveRecent().subscribe(LoginTestSubscriber(account))
                     } else {
-                        Logger.emit(TAG, "Login Failure")
+                        Logger.emit(TAG, "Login Failure. Account Exists.")
                     }
                 }
             })
@@ -73,11 +75,14 @@ public class LoginFragment: Fragment() {
         super.onAttach(activity)
         val view = activity?.findViewById(R.id.toolbar)
         view?.setVisibility(View.GONE)
+        val drawer = activity?.findViewById(R.id.drawer) as DrawerLayout?
+        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     private inner class LoginTestSubscriber(val account: Account): Subscriber<Page<Repository>>() {
         override fun onError(e: Throwable?) {
             Logger.emit(TAG, "Login Failure", e)
+            StashAccountManager.Factory.get(getActivity()).logOut(getActivity())
         }
 
         override fun onCompleted() {
@@ -86,7 +91,6 @@ public class LoginFragment: Fragment() {
 
         override fun onNext(t: Page<Repository>?) {
             Logger.emit(TAG, "Login Success")
-            StashAccountManager.Factory.getInstance(getActivity()).setDefaultAccount(account)
             getActivity().onBackPressed()
         }
 

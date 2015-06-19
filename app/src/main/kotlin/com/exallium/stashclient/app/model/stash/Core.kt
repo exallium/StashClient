@@ -222,8 +222,8 @@ public interface Core {
         public object Avatar {
 
             public fun getUri(context: Context, projectKey: String): Uri {
-                val account = StashAccountManager.Factory.getInstance(context).account
-                return Uri.parse(account?.getApiUrl() + corePath + "/projects/" + projectKey + "/avatar.png")
+                val accountApiUrl = StashAccountManager.Factory.get(context).getApiUrl()
+                return Uri.parse(accountApiUrl + corePath + "/projects/" + projectKey + "/avatar.png")
             }
 
             public fun buildUpon(context: Context, projectKey: String): RequestCreator {
@@ -424,13 +424,15 @@ public interface Core {
                      @Query("orderBy") orderBy: TagOrder = TagOrder.MODIFICATION): Observable<Page<Tag>>
 
             public interface Commits {
-                @GET(projectRepo + "/commits/{commitId}")
+                @GET(projectRepo + "/commits")
                 fun all(@Path("projectKey") projectKey: String,
                             @Path("repositorySlug") repositorySlug: String,
                             @Query("path") path: String,
                             @Query("since") since: String,
                             @Query("until") until: String,
-                            @Query("withCounts") withCounts: Boolean): Observable<Page<Commit>>
+                            @Query("withCounts") withCounts: Boolean,
+                            @Query("start") start: Int = 0,
+                            @Query("limit") limit: Int = 30): Observable<Page<Commit>>
 
                 @GET(projectRepo + "/commits/{commitId}")
                 fun single(@Path("projectKey") projectKey: String,
@@ -800,8 +802,8 @@ public interface Core {
         public object Avatar {
 
             public fun getUri(context: Context, userSlug: String): Uri {
-                val account = StashAccountManager.Factory.getInstance(context).account
-                return Uri.parse(account?.getApiUrl() + corePath + "/users/" + userSlug + "/avatar.png")
+                val accountApiUrl = StashAccountManager.Factory.get(context).getApiUrl()
+                return Uri.parse(accountApiUrl + corePath + "/users/" + userSlug + "/avatar.png")
             }
 
             public fun buildUpon(context: Context, userSlug: String): RequestCreator {

@@ -43,8 +43,8 @@ public class RepositoryAdapter(observable: Observable<EventElement<String, Stash
 
         public fun bind(element: EventElement<String, StashFile>?) {
             file = element?.getData()?.getValue()
-            icon.setTextColor(getColor(file?.isDirectory()?:false))
-            icon.setText(if (file?.isDirectory()?:false) IconManager.iconDirectory.toString() else IconManager.iconFile.toString())
+            icon.setTextColor(getColor(file?.isDirectory?:false))
+            icon.setText(if (file?.isDirectory?:false) IconManager.iconDirectory.toString() else IconManager.iconFile.toString())
             name.setText(file?.name)
         }
 

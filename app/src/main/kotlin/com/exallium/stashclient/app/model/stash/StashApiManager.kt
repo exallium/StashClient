@@ -5,8 +5,10 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.util.Base64
 import com.exallium.stashclient.app.controller.StashAccountManager
+import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.getApiUrl
 import com.exallium.stashclient.app.getUsername
+import retrofit.Profiler
 import retrofit.RequestInterceptor
 import retrofit.RestAdapter
 import retrofit.http.*
@@ -28,9 +30,18 @@ public class StashApiManager(val context: Context) {
 
     init {
         // Break account name into user and api
-        val apiUrl = StashAccountManager.Factory.getInstance(context).account?.getApiUrl()
+        val apiUrl = StashAccountManager.Factory.get(context).getApiUrl()
         restAdapter = RestAdapter.Builder().setEndpoint(apiUrl)
-                .setRequestInterceptor(StashAccountManager.Factory.getInstance(context)).build()
+                .setProfiler(object : Profiler<Long> {
+                    override fun beforeCall(): Long? {
+                        return null
+                    }
+
+                    override fun afterCall(requestInfo: Profiler.RequestInformation?, elapsedTime: Long, statusCode: Int, beforeCallData: Long?) {
+                        Logger.emit(TAG, "HTTPS %d  %s %s (%dms)".format(statusCode, requestInfo?.getMethod(), requestInfo?.getRelativePath(), elapsedTime))
+                    }
+                })
+                .setRequestInterceptor(StashAccountManager.Factory.get(context)).build()
     }
 
     public fun <T> getAdapter(adapterClass: Class<T>): T {
@@ -44,22 +55,26 @@ public class StashApiManager(val context: Context) {
         }
     }
 
+    companion object {
+        val TAG = StashApiManager.javaClass.getSimpleName()
+    }
+
     object Factory {
 
         private val managers: MutableMap<String, StashApiManager> = HashMap()
 
-        public fun getOrCreate(context: Context, account: Account): StashApiManager {
-            var manager = managers.get(account.name)
+        private fun get(context: Context, accountName: String): StashApiManager {
+            var manager = managers.get(accountName)
             if (manager == null) {
                 manager = StashApiManager(context)
-                managers.put(account.name, manager)
+                managers.put(accountName, manager)
             }
             return manager
         }
 
-        public fun getOrCreate(context: Context): StashApiManager {
-            val account = StashAccountManager.Factory.getInstance(context).account
-            return getOrCreate(context, account!!)
+        public fun get(context: Context): StashApiManager {
+            val account = StashAccountManager.Factory.get(context).getAccountDetails()
+            return get(context, account!!)
         }
     }
 

@@ -68,8 +68,8 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
             this.project = project
             name.setText(project?.name)
             description.setText(project?.description)
-            val account = StashAccountManager.Factory.getInstance(name.getContext()).account
-            if (account != null && project != null)
+            val loggedIn = StashAccountManager.Factory.get(name.getContext()).isLoggedIn()
+            if (loggedIn && project != null)
                 Core.Projects.Avatar.load(avatar.getContext(), avatar, project.key)
         }
     }

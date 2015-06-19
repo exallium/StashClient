@@ -6,7 +6,14 @@ import rx.subjects.PublishSubject
 import java.util.*
 
 public data class Group
-public data class User
+public data class User(var name: String,
+                       var emailAddress: String,
+                       var id: Int,
+                       var displayName: String,
+                       var active: Boolean,
+                       var slug: String,
+                       var type: String)
+public data class GitAuthor(var name: String, var emailAddress: String)
 public data class Page<T>(var size: Int,
                           var limit: Int,
                           var isLastPage: Boolean,
@@ -52,18 +59,14 @@ public data class Project(var key: String,
 
 }
 
-public class StashFile(val name: String): Comparable<StashFile> {
+public class StashFile(val name: String, val isDirectory: Boolean): Comparable<StashFile> {
 
     private val changeSubject: PublishSubject<StashFile> = PublishSubject.create()
     public val children: TreeMap<String, StashFile> = TreeMap()
 
-    public fun isDirectory(): Boolean {
-        return children.size() != 0
-    }
-
     override fun compareTo(other: StashFile): Int {
-        if (isDirectory() xor other.isDirectory()) {
-            return if (isDirectory()) -1 else 1
+        if (isDirectory xor other.isDirectory) {
+            return if (isDirectory) -1 else 1
         } else {
             return name.compareTo(other.name)
         }
@@ -73,13 +76,14 @@ public class StashFile(val name: String): Comparable<StashFile> {
         val pathTokens = path.split('/')
         val fileName = pathTokens[0]
         var child = children.get(fileName)
+        var childIsDirectory = pathTokens.size() > 1
         if (child == null) {
-            child = StashFile(fileName)
+            child = StashFile(fileName, childIsDirectory)
             children.put(fileName, child)
             changeSubject.onNext(child)
         }
 
-        return if (pathTokens.size() > 1) {
+        return if (childIsDirectory) {
             child.getOrCreate(pathTokens.drop(1).join("/"))
         } else {
             child
@@ -96,7 +100,12 @@ public data class Link(var url: String, var rel: String)
 public data class Permitted(val permitted: Boolean)
 public data class Branch
 public data class Change
-public data class Commit
+public data class Commit(var id: String,
+                         var displayId: String,
+                         var author: GitAuthor,
+                         var authorTimestamp: Long,
+                         var message: String,
+                         var parents: List<Commit>)
 public data class Comment
 public data class Diff
 public data class PullRequest

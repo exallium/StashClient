@@ -21,9 +21,11 @@ public object Router : Flow.Listener {
 
     public enum class Route {
         LOGIN,
+        LOGOUT,
         PROJECTS,
         PROJECT,
-        REPOSITORY
+        REPOSITORY,
+        SETTINGS
     }
 
     private val backstack = Backstack.single(Request(Route.PROJECTS))

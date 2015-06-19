@@ -4,10 +4,13 @@ import android.accounts.Account
 import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.exallium.rxrecyclerview.lib.GroupComparator
@@ -52,10 +55,7 @@ public class ProjectsFragment : Fragment() {
         layoutManager = LinearLayoutManager(getActivity())
         recyclerView.setLayoutManager(layoutManager)
 
-        // Boot them to the login screen
-        val account = StashAccountManager.Factory.getInstance(getActivity()).account ?: return
-
-        restAdapter = StashApiManager.Factory.getOrCreate(getActivity(), account)
+        restAdapter = StashApiManager.Factory.get(getActivity())
                 .getAdapter(javaClass<Core.Projects>())
 
         val projectsObservable = pageSubject
@@ -78,6 +78,23 @@ public class ProjectsFragment : Fragment() {
         toolbar.setVisibility(View.VISIBLE)
         toolbar.setLogo(null)
         toolbar.setTitle(R.string.app_name)
+        val navigationView = activity?.findViewById(R.id.nav) as NavigationView
+        navigationView.getMenu().clear()
+        navigationView.inflateMenu(R.menu.menu_projects)
+        navigationView.setNavigationItemSelectedListener(menuItemSelectedListener)
+        val drawer = activity?.findViewById(R.id.drawer) as DrawerLayout?
+        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    private object menuItemSelectedListener : NavigationView.OnNavigationItemSelectedListener {
+        override fun onNavigationItemSelected(p0: MenuItem?): Boolean {
+            when (p0?.getItemId()) {
+                R.id.settings -> Router.flow.goTo(Router.Request(Router.Route.SETTINGS))
+                R.id.log_out -> Router.flow.goTo(Router.Request(Router.Route.LOGOUT))
+                else -> return false
+            }
+            return true
+        }
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<Project>>() {

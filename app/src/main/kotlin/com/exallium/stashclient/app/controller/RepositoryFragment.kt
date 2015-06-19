@@ -1,7 +1,9 @@
 package com.exallium.stashclient.app.controller
 
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -40,9 +42,13 @@ public class RepositoryFragment : Fragment() {
     }
 
     private val pageSubject: PublishSubject<Page<String>> = PublishSubject.create()
-    private val baseStashFile: StashFile = StashFile("ROOT")
+    private val baseStashFile: StashFile = StashFile("ROOT", true)
     private var restAdapter: Core.Projects.Repos? = null
     private var clickSubject: BehaviorSubject<StashFile> = BehaviorSubject.create(baseStashFile)
+
+    // Subscribers
+    private var currentAdapterSubscriber: AdapterSubscriber? by SubscriberDelegate({ AdapterSubscriber() })
+    private var currentPageSubjectSubscriber: EmptySubscriber<StashFile>? by SubscriberDelegate({ EmptySubscriber<StashFile>() })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_projects, container, false)
@@ -51,25 +57,13 @@ public class RepositoryFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         recyclerView.setLayoutManager(LinearLayoutManager(getActivity()))
 
-        restAdapter = StashApiManager.Factory.getOrCreate(getActivity()).restAdapter.create(javaClass<Core.Projects.Repos>())
+        restAdapter = StashApiManager.Factory.get(getActivity()).restAdapter.create(javaClass<Core.Projects.Repos>())
 
         pageSubject.compose(RetroFitPageTransformer<String>())
                 ?.map { baseStashFile.getOrCreate(it) }
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribeOn(Schedulers.computation())
-                ?.subscribe(object : Subscriber<StashFile>() {
-                    override fun onCompleted() {
-                        clickSubject.subscribe(AdapterSubscriber())
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        Logger.emit(TAG, "Something bad happened", e)
-                    }
-
-                    override fun onNext(t: StashFile?) {
-                        // Do nothing
-                    }
-                })
+                ?.subscribe(currentPageSubjectSubscriber)
 
         restAdapter?.files(
                 projectKey = getArguments().getString(Constants.PROJECT_KEY),
@@ -81,6 +75,20 @@ public class RepositoryFragment : Fragment() {
         recyclerView.setAdapter(EmptyAdapter<StashFile>(
                 Observable.just(EmptyElement(groupComparator.getEmptyEvent(Event.TYPE.ADD), groupComparator)),
                 "Loading File Data..."))
+
+        clickSubject.subscribe(currentAdapterSubscriber)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        currentAdapterSubscriber = null
+        currentPageSubjectSubscriber = null
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        val drawer = activity.findViewById(R.id.drawer) as DrawerLayout?
+        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private inner class AdapterSubscriber : Subscriber<StashFile>() {
@@ -113,7 +121,7 @@ public class RepositoryFragment : Fragment() {
         }
 
         override fun onNext(t: Page<String>?) {
-            if (t != null) {
+            if (t != null && pageSubject.hasObservers()) {
                 pageSubject.onNext(t)
                 if (!t.isLastPage) {
                     restAdapter?.files(
@@ -130,4 +138,5 @@ public class RepositoryFragment : Fragment() {
         }
 
     }
+
 }

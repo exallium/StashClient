@@ -15,8 +15,8 @@ public class AuthService : Service() {
     var authenticator: AbstractAccountAuthenticator? = null
         get() {
             if ($authenticator == null)
-                authenticator = StashAuthenticator(getApplicationContext())
-            return authenticator
+                $authenticator = StashAuthenticator(getApplicationContext())
+            return $authenticator
         }
 
     override fun onBind(intent: Intent): IBinder? {

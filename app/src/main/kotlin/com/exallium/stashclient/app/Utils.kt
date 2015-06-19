@@ -106,3 +106,33 @@ public class RetroFitPageTransformer<V> : Observable.Transformer<Page<V>, V> {
         }
     }
 }
+
+public class EmptySubscriber<T> : Subscriber<T>() {
+    override fun onError(e: Throwable?) {
+        unsubscribe()
+    }
+
+    override fun onNext(t: T) {
+    }
+
+    override fun onCompleted() {
+        unsubscribe()
+    }
+
+}
+
+public class SubscriberDelegate<T : Subscriber<*>>(val instance: () -> T?) {
+
+    private var internal: T? = null
+
+    fun get(thisRef: Any?, prop: PropertyMetadata) : T? {
+        if (internal == null)
+            internal = instance()
+        return internal!!
+    }
+
+    fun set(thisRef: Any?, prop: PropertyMetadata, value: T?) {
+        internal?.unsubscribe()
+        internal = value
+    }
+}
