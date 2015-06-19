@@ -3,6 +3,7 @@ package com.exallium.stashclient.app.controller
 import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.exallium.stashclient.app.model.stash.Core
 import com.exallium.stashclient.app.model.stash.Page
 import com.exallium.stashclient.app.model.stash.StashApiManager
 import com.exallium.stashclient.app.model.stash.StashFile
+import com.exallium.stashclient.app.view.RepositorySVGMenuIconProcessor
 
 import kotlinx.android.synthetic.fragment_projects.*
 import rx.Observable
@@ -89,6 +91,10 @@ public class RepositoryFragment : Fragment() {
         super.onAttach(activity)
         val drawer = activity.findViewById(R.id.drawer) as DrawerLayout?
         drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        val nav = activity.findViewById(R.id.nav) as NavigationView?
+        nav?.getMenu()?.clear()
+        nav?.inflateMenu(R.menu.menu_repository)
+        RepositorySVGMenuIconProcessor(nav?.getMenu()!!, getResources()).process()
     }
 
     private inner class AdapterSubscriber : Subscriber<StashFile>() {

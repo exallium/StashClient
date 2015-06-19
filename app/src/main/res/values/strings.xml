@@ -17,4 +17,16 @@
     <!-- Menus -->
     <string name="settings">Settings</string>
     <string name="log_out">Log out</string>
+
+    <string name="menu_repository_subheader_actions">ACTIONS</string>
+    <string name="menu_repository_action_download">Download</string>
+    <string name="menu_repository_action_clone">Clone</string>
+    <string name="menu_repository_action_create_branch">Create branch</string>
+    <string name="menu_repository_action_create_pull_request">Create pull request</string>
+    <string name="menu_repository_action_fork">Fork</string>
+    <string name="menu_repository_subheader_navigation">NAVIGATION</string>
+    <string name="menu_repository_nav_source">Source</string>
+    <string name="menu_repository_nav_commits">Commits</string>
+    <string name="menu_repository_nav_branches">Branches</string>
+    <string name="menu_repository_nav_pull_requests">Pull requests</string>
 </resources>
