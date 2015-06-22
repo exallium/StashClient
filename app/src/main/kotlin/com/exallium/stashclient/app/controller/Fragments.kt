@@ -7,7 +7,8 @@ public fun createFragment(request: Router.Request): Fragment {
     val fragment = when(request.route) {
         Router.Route.PROJECTS -> ProjectsFragment()
         Router.Route.PROJECT -> ProjectFragment()
-        Router.Route.REPOSITORY -> RepositoryFragment()
+        Router.Route.SOURCE -> RepositoryFragment()
+        Router.Route.SETTINGS -> SettingsFragment()
         else -> LoginFragment()
     }
     fragment.setArguments(request.bundle)

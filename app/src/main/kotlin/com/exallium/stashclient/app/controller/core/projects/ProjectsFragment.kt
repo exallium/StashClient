@@ -90,7 +90,6 @@ public class ProjectsFragment : Fragment() {
         override fun onNavigationItemSelected(p0: MenuItem?): Boolean {
             when (p0?.getItemId()) {
                 R.id.settings -> Router.flow.goTo(Router.Request(Router.Route.SETTINGS))
-                R.id.log_out -> Router.flow.goTo(Router.Request(Router.Route.LOGOUT))
                 else -> return false
             }
             return true

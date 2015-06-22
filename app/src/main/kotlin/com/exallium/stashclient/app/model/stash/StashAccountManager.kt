@@ -52,12 +52,12 @@ public class StashAccountManager private constructor(val context: Context) : Int
         }
     }
 
-    private fun getDefaultAccountName(): String? {
+    private fun getMostRecentAccountName(): String? {
         val preferences = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
         return preferences.getString(Constants.ACCOUNT_KEY, null)
     }
 
-    public fun setDefaultAccountName(accountName: String?) {
+    public fun setMostRecentAccountName(accountName: String?) {
         val preferences = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
         preferences.edit().putString(Constants.ACCOUNT_KEY, accountName).apply()
     }
@@ -76,7 +76,7 @@ public class StashAccountManager private constructor(val context: Context) : Int
     private var account: Account?
         get() {
             if (_account == null) {
-                _account = getDefaultAccount()
+                _account = getMostRecentAccount()
                 accountSubject.onNext(_account?.name)
             }
             return _account
@@ -95,8 +95,8 @@ public class StashAccountManager private constructor(val context: Context) : Int
                 .downloader(OkHttpDownloader(okHttpClient)).build())
     }
 
-    private fun getDefaultAccount(): Account? {
-        val defaultAccountName = getDefaultAccountName()
+    private fun getMostRecentAccount(): Account? {
+        val defaultAccountName = getMostRecentAccountName()
 
         val accountList = accountManager.getAccountsByType(Constants.ACCOUNT_KEY)
         val defaultAccountList = accountList.filter { it.name.equals(defaultAccountName) }
@@ -106,7 +106,7 @@ public class StashAccountManager private constructor(val context: Context) : Int
             val backupAccount = if (backupAccountList.size() != 0) backupAccountList.get(0) else null
 
             backupAccount?.let {
-                setDefaultAccountName(accountName = backupAccount?.name)
+                setMostRecentAccountName(accountName = backupAccount?.name)
             }
 
             return backupAccount
@@ -119,18 +119,14 @@ public class StashAccountManager private constructor(val context: Context) : Int
         return account?.name
     }
 
-    public fun getAccountUsername(): String? {
-        return account?.getUsername()
-    }
-
     public fun isLoggedIn(): Boolean {
         return account != null
     }
 
     public fun logOut(activity: Activity) {
         if (_account != null) {
-            if (_account?.equals(getDefaultAccount())?:false)
-                setDefaultAccountName(null)
+            if (_account?.equals(getMostRecentAccount())?:false)
+                setMostRecentAccountName(null)
             accountManager.removeAccount(_account, activity, logoutCallback, null)
             account = null
         }

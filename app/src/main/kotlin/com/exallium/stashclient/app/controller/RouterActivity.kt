@@ -82,8 +82,13 @@ public class RouterActivity : Activity() {
     override fun onResume() {
         super.onResume()
         currentSubscriber = RouteRequestSubscriber()
-        Router.requestObservable.subscribe(currentSubscriber)
-        StashAccountManager.Factory.get(this).accountChangeObservable().subscribe(accountChangeSubscriber)
+        Router.requestObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(currentSubscriber)
+        StashAccountManager.Factory.get(this)
+                .accountChangeObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accountChangeSubscriber)
     }
 
     override fun onPause() {

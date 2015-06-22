@@ -56,7 +56,7 @@ public class LoginFragment: Fragment() {
                     if (accountCreated) {
                         val apiManager = StashApiManager.Factory.get(getActivity())
                         val adapter = apiManager.getAdapter(javaClass<Core.Profile.Repos>())
-                        StashAccountManager.Factory.get(getActivity()).setDefaultAccountName(account.name)
+                        StashAccountManager.Factory.get(getActivity()).setMostRecentAccountName(account.name)
                         adapter.retrieveRecent().subscribe(LoginTestSubscriber(account))
                     } else {
                         Logger.emit(TAG, "Login Failure. Account Exists.")

@@ -20,12 +20,25 @@ public object Router : Flow.Listener {
     public val requestObservable: Observable<Request> = requestPublisher
 
     public enum class Route {
+
+        // General
         LOGIN,
         LOGOUT,
+        SETTINGS,
+
+        // Projects
         PROJECTS,
         PROJECT,
-        REPOSITORY,
-        SETTINGS
+
+        // Repositories
+        DOWNLOADS,
+        BRANCH,
+        PULL_REQUEST,
+        FORK,
+        SOURCE,
+        COMMITS,
+        BRANCHES,
+        PULL_REQUESTS
     }
 
     private val backstack = Backstack.single(Request(Route.PROJECTS))
