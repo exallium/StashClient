@@ -12,5 +12,4 @@ one until full functionality exists.
 
 ## SVG Icons
 
-SVG Icons are currently rendered into PNGs with Android-SVG-Asset-Generator
-which is available for free on Github.  Note that Inkscape is required.
+SVG Icons are currently rendered into PNGs with makeicons.py
