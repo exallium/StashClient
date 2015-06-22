@@ -35,7 +35,7 @@ public object Router : Flow.Listener {
         BRANCH,
         PULL_REQUEST,
         FORK,
-        SOURCE,
+        SOURCES,
         COMMITS,
         BRANCHES,
         PULL_REQUESTS

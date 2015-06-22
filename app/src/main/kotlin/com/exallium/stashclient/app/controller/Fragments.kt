@@ -15,7 +15,7 @@ public fun createFragment(request: Router.Request): Fragment {
         Router.Route.BRANCH -> BranchFragment()
         Router.Route.FORK -> ForkFragment()
         Router.Route.PULL_REQUEST -> PullRequestFragment()
-        Router.Route.SOURCE -> SourceFragment()
+        Router.Route.SOURCES -> SourcesFragment()
         Router.Route.COMMITS -> CommitsFragment()
         Router.Route.BRANCHES -> BranchesFragment()
         Router.Route.PULL_REQUESTS -> PullRequestsFragment()

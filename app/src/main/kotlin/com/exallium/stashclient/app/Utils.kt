@@ -29,6 +29,10 @@ public abstract class AbstractLoggingSubscriber<T>(val tag: String): Subscriber<
 }
 
 public object Constants {
+
+    // Object Manipulation
+    val CREATE = "com.exallium.stashclient.CREATE"
+
     val PREFERENCES = "com.exallium.stashclient.PREFERENCES"
 
     // Routing Keys

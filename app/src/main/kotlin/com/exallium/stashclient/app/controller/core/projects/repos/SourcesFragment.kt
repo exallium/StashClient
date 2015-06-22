@@ -1,7 +1,6 @@
-package com.exallium.stashclient.app.controller
+package com.exallium.stashclient.app.controller.core.projects.repos
 
 import android.app.Activity
-import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
@@ -28,10 +27,10 @@ import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-public class SourceFragment : Fragment() {
+public class SourcesFragment : RepositoryFragment() {
 
     companion object {
-        val TAG: String = SourceFragment.javaClass.getSimpleName()
+        val TAG: String = javaClass.getSimpleName()
     }
 
     private val groupComparator = object : GenericComparator<StashFile>() {
@@ -84,15 +83,6 @@ public class SourceFragment : Fragment() {
         super.onDestroyView()
         currentAdapterSubscriber = null
         currentPageSubjectSubscriber = null
-    }
-
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        val drawer = activity.findViewById(R.id.drawer) as DrawerLayout?
-        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        val nav = activity.findViewById(R.id.nav) as NavigationView?
-        nav?.getMenu()?.clear()
-        nav?.inflateMenu(R.menu.menu_repository)
     }
 
     private inner class AdapterSubscriber : Subscriber<StashFile>() {
