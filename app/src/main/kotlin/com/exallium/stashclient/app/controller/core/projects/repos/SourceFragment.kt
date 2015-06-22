@@ -28,10 +28,10 @@ import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-public class RepositoryFragment : Fragment() {
+public class SourceFragment : Fragment() {
 
     companion object {
-        val TAG: String = RepositoryFragment.javaClass.getSimpleName()
+        val TAG: String = SourceFragment.javaClass.getSimpleName()
     }
 
     private val groupComparator = object : GenericComparator<StashFile>() {

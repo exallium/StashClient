@@ -1,13 +1,26 @@
 package com.exallium.stashclient.app.controller
 
 import android.app.Fragment
+import com.exallium.stashclient.app.controller.core.projects.repos.*
 
 
 public fun createFragment(request: Router.Request): Fragment {
     val fragment = when(request.route) {
+        // Projects
         Router.Route.PROJECTS -> ProjectsFragment()
         Router.Route.PROJECT -> ProjectFragment()
-        Router.Route.SOURCE -> RepositoryFragment()
+
+        // Repositories
+        Router.Route.DOWNLOADS -> DownloadsFragment()
+        Router.Route.BRANCH -> BranchFragment()
+        Router.Route.FORK -> ForkFragment()
+        Router.Route.PULL_REQUEST -> PullRequestFragment()
+        Router.Route.SOURCE -> SourceFragment()
+        Router.Route.COMMITS -> CommitsFragment()
+        Router.Route.BRANCHES -> BranchesFragment()
+        Router.Route.PULL_REQUESTS -> PullRequestsFragment()
+
+        // General Stuff
         Router.Route.SETTINGS -> SettingsFragment()
         else -> LoginFragment()
     }
