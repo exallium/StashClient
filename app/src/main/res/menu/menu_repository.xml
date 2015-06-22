@@ -4,24 +4,44 @@
         <item android:id="@+id/menu_repository_subheader_actions"
               android:title="@string/menu_repository_subheader_actions">
             <menu>
-                    <item android:id="@+id/menu_repository_action_download" android:title="@string/menu_repository_action_download" />
-                    <item android:id="@+id/menu_repository_action_clone" android:title="@string/menu_repository_action_clone" />
-                    <item android:id="@+id/menu_repository_action_create_branch" android:title="@string/menu_repository_action_create_branch" />
-                    <item android:id="@+id/menu_repository_action_create_pull_request" android:title="@string/menu_repository_action_create_pull_request" />
-                    <item android:id="@+id/menu_repository_action_fork" android:title="@string/menu_repository_action_fork" />
+                    <item android:id="@+id/menu_repository_action_download"
+                          android:icon="@drawable/icon_downloads"
+                          android:title="@string/menu_repository_action_download" />
+                    <item android:id="@+id/menu_repository_action_clone"
+                          android:icon="@drawable/icon_clone"
+                          android:title="@string/menu_repository_action_clone" />
+                    <item android:id="@+id/menu_repository_action_create_branch"
+                          android:icon="@drawable/icon_create_branch"
+                          android:title="@string/menu_repository_action_create_branch" />
+                    <item android:id="@+id/menu_repository_action_create_pull_request"
+                          android:icon="@drawable/icon_create_pull_request"
+                          android:title="@string/menu_repository_action_create_pull_request" />
+                    <item android:id="@+id/menu_repository_action_fork"
+                          android:icon="@drawable/icon_fork"
+                          android:title="@string/menu_repository_action_fork" />
             </menu>
         </item>
         <item android:id="@+id/menu_repository_subheader_nav"
               android:title="@string/menu_repository_subheader_navigation">
             <menu>
-                    <item android:id="@+id/menu_repository_nav_source" android:title="@string/menu_repository_nav_source" />
-                    <item android:id="@+id/menu_repository_nav_commits" android:title="@string/menu_repository_nav_commits" />
-                    <item android:id="@+id/menu_repository_nav_branches" android:title="@string/menu_repository_nav_branches" />
-                    <item android:id="@+id/menu_repository_nav_pull_requests" android:title="@string/menu_repository_nav_pull_requests" />
+                    <item android:id="@+id/menu_repository_nav_source"
+                          android:icon="@drawable/icon_source"
+                          android:title="@string/menu_repository_nav_source" />
+                    <item android:id="@+id/menu_repository_nav_commits"
+                          android:icon="@drawable/icon_commits"
+                          android:title="@string/menu_repository_nav_commits" />
+                    <item android:id="@+id/menu_repository_nav_branches"
+                          android:icon="@drawable/icon_branches"
+                          android:title="@string/menu_repository_nav_branches" />
+                    <item android:id="@+id/menu_repository_nav_pull_requests"
+                          android:icon="@drawable/icon_pull_requests"
+                          android:title="@string/menu_repository_nav_pull_requests" />
             </menu>
         </item>
     </group>
     <group android:id="@+id/settings_group">
-        <item android:id="@+id/settings" android:title="@string/settings" />
+        <item android:id="@+id/settings"
+              android:icon="@drawable/icon_settings"
+              android:title="@string/settings" />
     </group>
 </menu>
