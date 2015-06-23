@@ -167,7 +167,8 @@ public class RouterActivity : Activity() {
 
     private fun onSnackbar(bundle: Bundle?) {
         if (bundle == null) return
-        Snackbar.make(findViewById(android.R.id.content), bundle.getString(Constants.MESSAGE), bundle.getInt(Constants.MESSAGE_LENGTH)).show()
+        Snackbar.make(findViewById(android.R.id.content),
+                bundle.getString(Constants.MESSAGE), bundle.getInt(Constants.MESSAGE_LENGTH)).show()
     }
 
 }
