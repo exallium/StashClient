@@ -1,16 +1,25 @@
 package com.exallium.stashclient.app.controller.core.projects.repos
 
 import android.app.Activity
+import android.app.DownloadManager
 import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import com.exallium.stashclient.app.Constants
 import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.controller.Router
+import com.exallium.stashclient.app.controller.logging.Logger
+import com.exallium.stashclient.app.model.stash.DownloadRequest
+import com.exallium.stashclient.app.model.stash.StashDownloadManager
 
-public open class RepositoryFragment : Fragment() {
+public open class BaseRepositoryFragment : Fragment() {
+
+    companion object {
+        val TAG = BaseRepositoryFragment.javaClass.getSimpleName()
+    }
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
@@ -40,7 +49,7 @@ public open class RepositoryFragment : Fragment() {
     }
 
     private fun handleActionDownload() {
-        // Send a download request to the download manager
+        Router.goTo(Router.Request(Router.Route.DOWNLOAD, getArguments()), true)
     }
 
     private fun handleActionClone() {
@@ -49,33 +58,33 @@ public open class RepositoryFragment : Fragment() {
 
     private fun handleActionCreateBranch() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.flow.goTo(Router.Request(Router.Route.BRANCH, getArguments()))
+        Router.goTo(Router.Request(Router.Route.BRANCH, getArguments()))
     }
 
     private fun handleActionCreatePullRequest() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.flow.goTo(Router.Request(Router.Route.PULL_REQUEST, getArguments()))
+        Router.goTo(Router.Request(Router.Route.PULL_REQUEST, getArguments()))
     }
 
     private fun handleActionFork() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.flow.goTo(Router.Request(Router.Route.FORK, getArguments()))
+        Router.goTo(Router.Request(Router.Route.FORK, getArguments()))
     }
 
     private fun handleNavigationBranches() {
-        Router.flow.goTo(Router.Request(Router.Route.BRANCHES, getArguments()))
+        Router.goTo(Router.Request(Router.Route.BRANCHES, getArguments()))
     }
 
     private fun handleNavigationCommits() {
-        Router.flow.goTo(Router.Request(Router.Route.COMMITS, getArguments()))
+        Router.goTo(Router.Request(Router.Route.COMMITS, getArguments()))
     }
 
     private fun handleNavigationSource() {
-        Router.flow.goTo(Router.Request(Router.Route.SOURCES, getArguments()))
+        Router.goTo(Router.Request(Router.Route.SOURCES, getArguments()))
     }
 
     private fun handleNavigationPullRequests() {
-        Router.flow.goTo(Router.Request(Router.Route.PULL_REQUESTS, getArguments()))
+        Router.goTo(Router.Request(Router.Route.PULL_REQUESTS, getArguments()))
     }
 
 

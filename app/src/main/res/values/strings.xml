@@ -29,4 +29,10 @@
     <string name="menu_repository_nav_commits">Commits</string>
     <string name="menu_repository_nav_branches">Branches</string>
     <string name="menu_repository_nav_pull_requests">Pull requests</string>
+
+    <string name="download_success">Download Finished!</string>
+    <string name="download_failed">Download Failed!</string>
+    <string name="download_canceled">Download Canceled!</string>
+    <string name="stop">Stop</string>
+    <string name="error">Error</string>
 </resources>

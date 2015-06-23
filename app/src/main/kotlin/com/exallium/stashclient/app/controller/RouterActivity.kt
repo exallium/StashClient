@@ -3,14 +3,19 @@ package com.exallium.stashclient.app.controller
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.view.MenuItem
 import com.exallium.stashclient.app.*
 import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.model.stash.Core
+import com.exallium.stashclient.app.model.stash.DownloadRequest
 import com.exallium.stashclient.app.model.stash.StashApiManager
+import com.exallium.stashclient.app.model.stash.StashDownloadManager
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
 import rx.subjects.PublishSubject
@@ -37,6 +42,7 @@ public class RouterActivity : Activity() {
         override fun onNext(t: Router.Request?) {
             if (t != null) {
                 when (t.route) {
+                    Router.Route.DOWNLOAD -> onDownload(t.bundle)
                     Router.Route.LOGOUT -> StashAccountManager.Factory
                             .get(this@RouterActivity)
                             .logOut(this@RouterActivity);
@@ -57,7 +63,7 @@ public class RouterActivity : Activity() {
         if (Constants.LOGIN_ACTION.equals(getIntent().getAction())) {
             requestFragment(Router.Request(Router.Route.LOGIN))
         } else {
-            val request = Router.flow.getBackstack().current().getScreen() as Router.Request
+            val request = Router.getLastRequest()
             requestFragment(request)
         }
     }
@@ -65,7 +71,7 @@ public class RouterActivity : Activity() {
     private fun requestFragment(request: Router.Request) {
         val accountManager = StashAccountManager.Factory.get(this)
         if (!accountManager.isLoggedIn() && request.route != Router.Route.LOGIN) {
-            Router.flow.goTo(Router.Request(Router.Route.LOGIN))
+            Router.goTo(Router.Request(Router.Route.LOGIN))
             return
         }
 
@@ -99,7 +105,7 @@ public class RouterActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        if (!Router.flow.goBack())
+        if (!Router.goBack())
             super.onBackPressed()
     }
 
@@ -127,6 +133,35 @@ public class RouterActivity : Activity() {
             Logger.emit(TAG, "Something bad happened", e)
         }
 
+    }
+
+    private fun onDownload(bundle: Bundle?) {
+
+        if (bundle == null)
+            return
+
+        // Send a download request to the download manager
+        StashDownloadManager.Factory.get(this)
+                .queueRequest(DownloadRequest.fromBundle(bundle))
+                .subscribe({
+                    val view = findViewById(android.R.id.content)
+                    if (view != null) {
+                        if (it.cursor.getCount() == 0) {
+                            Snackbar.make(view, R.string.download_canceled, Snackbar.LENGTH_SHORT).show()
+                        } else {
+                            it.cursor.moveToFirst()
+                            val status = it.cursor.getInt(it.cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+
+                            val out = when (status) {
+                                DownloadManager.STATUS_FAILED -> R.string.download_failed
+                                DownloadManager.STATUS_SUCCESSFUL -> R.string.download_success
+                                else -> R.string.error
+                            }
+
+                            Snackbar.make(view, out, Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                })
     }
 
 }

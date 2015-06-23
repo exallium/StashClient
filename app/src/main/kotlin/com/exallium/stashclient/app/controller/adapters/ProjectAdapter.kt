@@ -41,7 +41,7 @@ public class ProjectAdapter(observable: Observable<EventElement<String, Reposito
                     val bundle = Bundle()
                     bundle.putString(Constants.PROJECT_KEY, repository?.project?.key)
                     bundle.putString(Constants.REPOSITORY_SLUG, repository?.slug)
-                    Router.flow.goTo(Router.Request(Router.Route.SOURCES, bundle))
+                    Router.goTo(Router.Request(Router.Route.SOURCES, bundle))
                 }
             }
         }

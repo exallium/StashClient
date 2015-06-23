@@ -31,7 +31,7 @@ public object Router : Flow.Listener {
         PROJECT,
 
         // Repositories
-        DOWNLOADS,
+        DOWNLOAD,
         BRANCH,
         PULL_REQUEST,
         FORK,
@@ -42,5 +42,26 @@ public object Router : Flow.Listener {
     }
 
     private val backstack = Backstack.single(Request(Route.PROJECTS))
-    public val flow: Flow = Flow(backstack, this)
+    private val flow: Flow = Flow(backstack, this)
+
+    public fun goTo(request: Request, isAction: Boolean = false) {
+        if (isAction) {
+            requestPublisher.onNext(request)
+        } else {
+            flow.goTo(request)
+        }
+    }
+
+    public fun replaceTo(request: Request) {
+        flow.replaceTo(request)
+    }
+
+    fun getLastRequest(): Request {
+        return flow.getBackstack().current().getScreen() as Request
+    }
+
+    fun goBack(): Boolean {
+        return flow.goBack()
+    }
+
 }

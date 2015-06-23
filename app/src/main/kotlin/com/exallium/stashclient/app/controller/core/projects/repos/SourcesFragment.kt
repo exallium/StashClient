@@ -27,7 +27,7 @@ import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-public class SourcesFragment : RepositoryFragment() {
+public class SourcesFragment : BaseRepositoryFragment() {
 
     companion object {
         val TAG: String = javaClass.getSimpleName()

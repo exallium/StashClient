@@ -1,6 +1,8 @@
 package com.exallium.stashclient.app.controller
 
 import android.app.Fragment
+import com.exallium.stashclient.app.controller.core.projects.ProjectFragment
+import com.exallium.stashclient.app.controller.core.projects.ProjectsFragment
 import com.exallium.stashclient.app.controller.core.projects.repos.*
 
 
@@ -11,7 +13,6 @@ public fun createFragment(request: Router.Request): Fragment {
         Router.Route.PROJECT -> ProjectFragment()
 
         // Repositories
-        Router.Route.DOWNLOADS -> DownloadsFragment()
         Router.Route.BRANCH -> BranchFragment()
         Router.Route.FORK -> ForkFragment()
         Router.Route.PULL_REQUEST -> PullRequestFragment()

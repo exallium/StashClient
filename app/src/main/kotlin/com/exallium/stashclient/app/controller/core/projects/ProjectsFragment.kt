@@ -1,4 +1,4 @@
-package com.exallium.stashclient.app.controller
+package com.exallium.stashclient.app.controller.core.projects
 
 import android.accounts.Account
 import android.app.Activity
@@ -31,14 +31,14 @@ import rx.Observable
 import rx.Subscriber
 import rx.subjects.PublishSubject
 
-public class ProjectsFragment : Fragment() {
+public class ProjectsFragment : BaseProjectFragment() {
 
     var layoutManager: RecyclerView.LayoutManager? = null
     var pageSubject: PublishSubject<Page<Project>> = PublishSubject.create()
     var restAdapter: Core.Projects? = null
 
     companion object {
-        val TAG = ProjectsFragment.javaClass.getSimpleName()
+        val TAG = javaClass.getSimpleName()
     }
 
     object groupComparator : GenericComparator<Project>() {
@@ -70,30 +70,6 @@ public class ProjectsFragment : Fragment() {
         restAdapter?.retrieve()?.subscribe(RestPageSubscriber())
 
         recyclerView.setAdapter(viewAdapter)
-    }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        val toolbar = activity?.findViewById(R.id.toolbar) as Toolbar
-        toolbar.setVisibility(View.VISIBLE)
-        toolbar.setLogo(null)
-        toolbar.setTitle(R.string.app_name)
-        val navigationView = activity?.findViewById(R.id.nav) as NavigationView
-        navigationView.getMenu().clear()
-        navigationView.inflateMenu(R.menu.menu_projects)
-        navigationView.setNavigationItemSelectedListener(menuItemSelectedListener)
-        val drawer = activity?.findViewById(R.id.drawer) as DrawerLayout?
-        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
-
-    private object menuItemSelectedListener : NavigationView.OnNavigationItemSelectedListener {
-        override fun onNavigationItemSelected(p0: MenuItem?): Boolean {
-            when (p0?.getItemId()) {
-                R.id.settings -> Router.flow.goTo(Router.Request(Router.Route.SETTINGS))
-                else -> return false
-            }
-            return true
-        }
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<Project>>() {

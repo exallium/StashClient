@@ -1,8 +1,7 @@
-package com.exallium.stashclient.app.controller
+package com.exallium.stashclient.app.controller.core.projects
 
 import android.accounts.Account
 import android.app.Activity
-import android.app.Fragment
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -28,10 +27,10 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 
-public class ProjectFragment : Fragment() {
+public class ProjectFragment : BaseProjectFragment() {
 
     companion object {
-        val TAG = ProjectFragment.javaClass.getSimpleName()
+        val TAG = javaClass.getSimpleName()
     }
 
     private var toolbarTarget: ToolbarTarget? = null
@@ -76,8 +75,6 @@ public class ProjectFragment : Fragment() {
         toolbarTarget = ToolbarTarget(toolbar)
         Core.Projects.Avatar.load(activity, toolbarTarget!!, getArguments().getString(Constants.PROJECT_KEY))
         toolbar.setTitle(getArguments().getString(Constants.PROJECT_NAME))
-        val drawer = activity.findViewById(R.id.drawer) as DrawerLayout?
-        drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private inner class RestPageSubscriber : Subscriber<Page<Repository>>() {

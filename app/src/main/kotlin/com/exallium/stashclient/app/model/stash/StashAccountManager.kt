@@ -5,6 +5,7 @@ import android.accounts.AccountManager
 import android.accounts.AccountManagerCallback
 import android.accounts.AccountManagerFuture
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -40,6 +41,10 @@ public class StashAccountManager private constructor(val context: Context) : Int
         return chain?.proceed(newRequest)
     }
 
+    public fun addHeaders(request: DownloadManager.Request) {
+        request.addRequestHeader("Authorization", "Basic " + getCredentials())
+    }
+
     private fun getCredentials(): String {
         return Base64.encodeToString("%s:%s".format(account?.getUsername(),
                 accountManager.getPassword(account)).toByteArray(), Base64.DEFAULT)
@@ -48,7 +53,7 @@ public class StashAccountManager private constructor(val context: Context) : Int
 
     private object logoutCallback : AccountManagerCallback<Bundle> {
         override fun run(future: AccountManagerFuture<Bundle>?) {
-            Router.flow.replaceTo(Router.Request(Router.Route.PROJECTS))
+            Router.replaceTo(Router.Request(Router.Route.PROJECTS))
         }
     }
 
