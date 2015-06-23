@@ -57,7 +57,7 @@ public class ProjectsAdapter(observable: Observable<EventElement<String, Project
                     val bundle = Bundle()
                     bundle.putString(Constants.PROJECT_KEY, project?.key)
                     bundle.putString(Constants.PROJECT_NAME, project?.name)
-                    Router.goTo(Router.Request(Router.Route.PROJECT, bundle))
+                    Router.get(Router.Request(Router.Route.PROJECT, bundle))
                 }
             }
         }

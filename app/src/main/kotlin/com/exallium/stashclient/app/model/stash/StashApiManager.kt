@@ -8,6 +8,9 @@ import com.exallium.stashclient.app.controller.StashAccountManager
 import com.exallium.stashclient.app.controller.logging.Logger
 import com.exallium.stashclient.app.getApiUrl
 import com.exallium.stashclient.app.getUsername
+import com.squareup.okhttp.Interceptor
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Response
 import retrofit.Profiler
 import retrofit.RequestInterceptor
 import retrofit.RestAdapter
@@ -24,9 +27,8 @@ import java.util.*
  */
 public class StashApiManager(val context: Context) {
 
-    val restAdapter: RestAdapter
-
-    val adapterMap: MutableMap<Class<*>, Any> = HashMap()
+    private val restAdapter: RestAdapter
+    private val adapterMap: MutableMap<Class<*>, Any> = HashMap()
 
     init {
         // Break account name into user and api
@@ -41,7 +43,8 @@ public class StashApiManager(val context: Context) {
                         Logger.emit(TAG, "HTTPS %d  %s %s (%dms)".format(statusCode, requestInfo?.getMethod(), requestInfo?.getRelativePath(), elapsedTime))
                     }
                 })
-                .setRequestInterceptor(StashAccountManager.Factory.get(context)).build()
+                .setRequestInterceptor(StashAccountManager.Factory.get(context))
+                .build()
     }
 
     public fun <T> getAdapter(adapterClass: Class<T>): T {

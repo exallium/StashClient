@@ -43,6 +43,7 @@ public class RouterActivity : Activity() {
             if (t != null) {
                 when (t.route) {
                     Router.Route.DOWNLOAD -> onDownload(t.bundle)
+                    Router.Route.SNACKBAR -> onSnackbar(t.bundle)
                     Router.Route.LOGOUT -> StashAccountManager.Factory
                             .get(this@RouterActivity)
                             .logOut(this@RouterActivity);
@@ -71,7 +72,7 @@ public class RouterActivity : Activity() {
     private fun requestFragment(request: Router.Request) {
         val accountManager = StashAccountManager.Factory.get(this)
         if (!accountManager.isLoggedIn() && request.route != Router.Route.LOGIN) {
-            Router.goTo(Router.Request(Router.Route.LOGIN))
+            Router.get(Router.Request(Router.Route.LOGIN))
             return
         }
 
@@ -162,6 +163,11 @@ public class RouterActivity : Activity() {
                         }
                     }
                 })
+    }
+
+    private fun onSnackbar(bundle: Bundle?) {
+        if (bundle == null) return
+        Snackbar.make(findViewById(android.R.id.content), bundle.getString(Constants.MESSAGE), bundle.getInt(Constants.MESSAGE_LENGTH)).show()
     }
 
 }

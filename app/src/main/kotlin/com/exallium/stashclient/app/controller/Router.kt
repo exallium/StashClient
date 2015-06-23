@@ -25,6 +25,7 @@ public object Router : Flow.Listener {
         LOGIN,
         LOGOUT,
         SETTINGS,
+        SNACKBAR,
 
         // Projects
         PROJECTS,
@@ -44,15 +45,15 @@ public object Router : Flow.Listener {
     private val backstack = Backstack.single(Request(Route.PROJECTS))
     private val flow: Flow = Flow(backstack, this)
 
-    public fun goTo(request: Request, isAction: Boolean = false) {
-        if (isAction) {
-            requestPublisher.onNext(request)
-        } else {
-            flow.goTo(request)
-        }
+    public fun get(request: Request) {
+        flow.goTo(request)
     }
 
-    public fun replaceTo(request: Request) {
+    public fun post(request: Request) {
+        requestPublisher.onNext(request)
+    }
+
+    public fun replace(request: Request) {
         flow.replaceTo(request)
     }
 

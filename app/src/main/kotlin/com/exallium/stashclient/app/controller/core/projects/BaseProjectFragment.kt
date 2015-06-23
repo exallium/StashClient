@@ -29,7 +29,7 @@ public open class BaseProjectFragment : Fragment() {
     private object menuItemSelectedListener : NavigationView.OnNavigationItemSelectedListener {
         override fun onNavigationItemSelected(p0: MenuItem?): Boolean {
             when (p0?.getItemId()) {
-                R.id.settings -> Router.goTo(Router.Request(Router.Route.SETTINGS))
+                R.id.settings -> Router.get(Router.Request(Router.Route.SETTINGS))
                 else -> return false
             }
             return true

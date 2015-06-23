@@ -3,6 +3,10 @@ package com.exallium.stashclient.app.controller.core.projects.repos
 import android.app.Activity
 import android.app.DownloadManager
 import android.app.Fragment
+import android.content.ClipData
+import android.content.ClipDescription
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -12,7 +16,9 @@ import com.exallium.stashclient.app.Constants
 import com.exallium.stashclient.app.R
 import com.exallium.stashclient.app.controller.Router
 import com.exallium.stashclient.app.controller.logging.Logger
+import com.exallium.stashclient.app.model.stash.Core
 import com.exallium.stashclient.app.model.stash.DownloadRequest
+import com.exallium.stashclient.app.model.stash.StashApiManager
 import com.exallium.stashclient.app.model.stash.StashDownloadManager
 
 public open class BaseRepositoryFragment : Fragment() {
@@ -49,42 +55,55 @@ public open class BaseRepositoryFragment : Fragment() {
     }
 
     private fun handleActionDownload() {
-        Router.goTo(Router.Request(Router.Route.DOWNLOAD, getArguments()), true)
+        Router.post(Router.Request(Router.Route.DOWNLOAD, getArguments()))
     }
 
     private fun handleActionClone() {
-        // Write the git clone URL to the clipboard
+        val repoAdapter = StashApiManager.Factory.get(getActivity()).getAdapter(javaClass<Core.Projects.Repos>())
+        repoAdapter.retrieve(getArguments()
+                .getString(Constants.PROJECT_KEY), getArguments()
+                .getString(Constants.REPOSITORY_SLUG)).subscribe {
+            val clipManager = getActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            clipManager.setPrimaryClip(ClipData.newPlainText(
+                    getResources().getString(R.string.clone_clip_description), it.cloneUrl))
+
+            val bundle = Bundle()
+            bundle.putString(Constants.MESSAGE, getResources().getString(R.string.clone_copy_success))
+            bundle.putInt(Constants.MESSAGE_LENGTH, Snackbar.LENGTH_SHORT)
+            Router.get(Router.Request(Router.Route.SNACKBAR, bundle))
+        }
     }
 
     private fun handleActionCreateBranch() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.goTo(Router.Request(Router.Route.BRANCH, getArguments()))
+        Router.get(Router.Request(Router.Route.BRANCH, getArguments()))
     }
 
     private fun handleActionCreatePullRequest() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.goTo(Router.Request(Router.Route.PULL_REQUEST, getArguments()))
+        Router.get(Router.Request(Router.Route.PULL_REQUEST, getArguments()))
     }
 
     private fun handleActionFork() {
         getArguments().putBoolean(Constants.CREATE, true)
-        Router.goTo(Router.Request(Router.Route.FORK, getArguments()))
+        Router.get(Router.Request(Router.Route.FORK, getArguments()))
     }
 
     private fun handleNavigationBranches() {
-        Router.goTo(Router.Request(Router.Route.BRANCHES, getArguments()))
+        Router.get(Router.Request(Router.Route.BRANCHES, getArguments()))
     }
 
     private fun handleNavigationCommits() {
-        Router.goTo(Router.Request(Router.Route.COMMITS, getArguments()))
+        Router.get(Router.Request(Router.Route.COMMITS, getArguments()))
     }
 
     private fun handleNavigationSource() {
-        Router.goTo(Router.Request(Router.Route.SOURCES, getArguments()))
+        Router.get(Router.Request(Router.Route.SOURCES, getArguments()))
     }
 
     private fun handleNavigationPullRequests() {
-        Router.goTo(Router.Request(Router.Route.PULL_REQUESTS, getArguments()))
+        Router.get(Router.Request(Router.Route.PULL_REQUESTS, getArguments()))
     }
 
 

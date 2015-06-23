@@ -57,7 +57,7 @@ public class SourcesFragment : BaseRepositoryFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         recyclerView.setLayoutManager(LinearLayoutManager(getActivity()))
 
-        restAdapter = StashApiManager.Factory.get(getActivity()).restAdapter.create(javaClass<Core.Projects.Repos>())
+        restAdapter = StashApiManager.Factory.get(getActivity()).getAdapter(javaClass<Core.Projects.Repos>())
 
         pageSubject.compose(RetroFitPageTransformer<String>())
                 ?.map { baseStashFile.getOrCreate(it) }

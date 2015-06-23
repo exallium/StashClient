@@ -53,7 +53,7 @@ public class StashAccountManager private constructor(val context: Context) : Int
 
     private object logoutCallback : AccountManagerCallback<Bundle> {
         override fun run(future: AccountManagerFuture<Bundle>?) {
-            Router.replaceTo(Router.Request(Router.Route.PROJECTS))
+            Router.replace(Router.Request(Router.Route.PROJECTS))
         }
     }
 

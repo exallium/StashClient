@@ -35,6 +35,10 @@ public object Constants {
 
     val PREFERENCES = "com.exallium.stashclient.PREFERENCES"
 
+    // Snackbar Action
+    val MESSAGE = "com.exallium.stashclient.MESSAGE"
+    val MESSAGE_LENGTH = "com.exallium.stashclient.MESSAGE_LENGTH"
+
     // Routing Keys
     val NEXT_PAGE = "com.exallium.stashclient.NEXT_PAGE"
     val NEXT_BUNDLE = "com.exallium.stashclient.NEXT_BUNDLE"
